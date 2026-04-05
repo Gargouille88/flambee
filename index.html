@@ -1402,7 +1402,7 @@ function openEditModal(id) {
   const f = FLAMBEES.find(x => x.id === id);
   if (!f) return;
   editingId = id;
-  document.getElementById('modal-title').textContent = 'Modifier Â· ' + (f.name || 'Tarte flambÃ©e');
+  document.getElementById('modal-title').textContent = 'Modifier Â· ' + (f.resto || 'Tarte flambée');
   document.getElementById('btn-delete').style.display = '';
   fillForm(f);
   document.getElementById('modal-overlay').classList.add('open');
@@ -1481,7 +1481,7 @@ function closeModalIfBg(e) {
 
 function saveFlambee() {
   const name = document.getElementById('f-resto').value.trim();
-  if (!name) { toast('â ï¸ Donnez un nom Ã  cette flambÃ©e'); return; }
+  if (!name) { toast('⚠️ Indiquez le nom du restaurant'); return; }
 
   const photoURL = document.getElementById('f-photo-url').value.trim();
   const photoPrev = document.getElementById('f-photo-preview');
