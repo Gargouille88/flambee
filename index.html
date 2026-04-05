@@ -1643,19 +1643,17 @@ async function renderCarte() {
   // Liste en dessous de la carte
   list.innerHTML = sorted.map(f => {
     const score = getScore(f);
-    const gmUrl = f.adresse && f.ville
-      ? 'https://www.google.com/maps/search/' + encodeURIComponent((f.adresse + ' ' + f.ville).trim())
-      : f.ville
-        ? 'https://www.google.com/maps/search/' + encodeURIComponent(f.resto + ' ' + f.ville)
-        : '#';
-    return '<div class="map-item" onclick="openMap('' + gmUrl + '')">'
-      + '<div class="map-item-icon">' + (f.photo ? '<img src="' + f.photo + '" style="width:40px;height:40px;border-radius:8px;object-fit:cover">' : '🏠') + '</div>'
-      + '<div class="map-item-info">'
-      + '<div class="map-item-name">' + (f.resto || f.name) + '</div>'
-      + '<div class="map-item-loc">📍 ' + (f.resto || '') + (f.ville ? ' · ' + f.ville : '') + '</div>'
-      + '</div>'
-      + (score > 0 ? '<div class="map-item-score">★ ' + score.toFixed(1) + '</div>' : '')
-      + '</div>';
+    const q = encodeURIComponent([(f.adresse || ''), (f.ville || f.resto || '')].filter(Boolean).join(' '));
+    const gmUrl = 'https://www.google.com/maps/search/' + q;
+    const icon = f.photo ? `<img src="${f.photo}" style="width:40px;height:40px;border-radius:8px;object-fit:cover">` : '🏠';
+    const scoreHtml = score > 0 ? `<div class="map-item-score">★ ${score.toFixed(1)}</div>` : '';
+    return `<div class="map-item" onclick="openMap('${gmUrl}')">
+      <div class="map-item-icon">${icon}</div>
+      <div class="map-item-info">
+        <div class="map-item-name">${f.resto || f.name}</div>
+        <div class="map-item-loc">📍 ${f.resto || ''}${f.ville ? ' · ' + f.ville : ''}</div>
+      </div>${scoreHtml}
+    </div>`;
   }).join('') || '<p style="color:var(--text3);text-align:center;padding:20px">Aucun restaurant enregistré</p>';
 
   // Initialiser la carte Leaflet
