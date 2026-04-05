@@ -1,0 +1,1828 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flambée 🔥 — Mes Tartes Flambées</title>
+<style>
+  /* === RESET & BASE === */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #fdf8f0;
+    --bg2: #fff8ed;
+    --bg3: #ffffff;
+    --card: #ffffff;
+    --border: #e8dcc8;
+    --border2: #d4c4a8;
+    --text: #2c1f0e;
+    --text2: #6b5744;
+    --text3: #9a8070;
+    --accent: #c84b0a;
+    --accent2: #e8680d;
+    --amber: #d97706;
+    --amber-bg: #fef3c7;
+    --teal: #0f766e;
+    --teal-bg: #ccfbf1;
+    --purple: #7c3aed;
+    --purple-bg: #f3eeff;
+    --gold: #b45309;
+    --gold-bg: #fffbeb;
+    --star-on: #f59e0b;
+    --star-off: #d4c4a8;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow: 0 2px 8px rgba(44,31,14,0.08);
+    --shadow-lg: 0 8px 32px rgba(44,31,14,0.12);
+    --font: 'Georgia', serif;
+    --font-ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1208; --bg2: #211808; --bg3: #2a1f0d;
+      --card: #2a1f0d; --border: #3d2e18; --border2: #4e3a22;
+      --text: #f5e8d0; --text2: #c4a882; --text3: #8a7060;
+      --accent: #ff6b1a; --accent2: #ff8c3d;
+      --amber: #fbbf24; --amber-bg: #2d1f00;
+      --teal: #2dd4bf; --teal-bg: #042f2e;
+      --purple: #a78bfa; --purple-bg: #1e1035;
+      --gold: #fcd34d; --gold-bg: #2d2000;
+    }
+  }
+
+  body {
+    font-family: var(--font-ui);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* === HEADER === */
+  header {
+    background: var(--accent);
+    background-image: linear-gradient(135deg, #c84b0a 0%, #9c3208 100%);
+    color: #fff;
+    padding: 0 20px;
+  }
+
+  .header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    gap: 16px;
+  }
+
+  .header-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font);
+  }
+
+  .header-title h1 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: #fff;
+  }
+
+  .header-title .flame { font-size: 24px; }
+
+  .header-stats {
+    display: flex;
+    gap: 20px;
+    font-size: 13px;
+    opacity: 0.9;
+  }
+
+  .header-stat { display: flex; flex-direction: column; align-items: center; }
+  .header-stat .val { font-size: 18px; font-weight: 700; line-height: 1; }
+  .header-stat .lbl { font-size: 11px; opacity: 0.8; }
+
+  .header-btn {
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.4);
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: background 0.15s;
+    white-space: nowrap;
+  }
+
+  .header-btn:hover { background: rgba(255,255,255,0.3); }
+
+  /* === TABS === */
+  .tabs-bar {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .tabs-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    padding: 0 20px;
+  }
+
+  .tab-btn {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text2);
+    padding: 14px 18px 12px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
+
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* === MAIN === */
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* === TOOLBAR === */
+  .toolbar {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+
+  .toolbar input[type="text"],
+  .toolbar select {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    padding: 8px 12px;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .toolbar input[type="text"]:focus,
+  .toolbar select:focus { border-color: var(--accent); }
+
+  .toolbar input[type="text"] { flex: 1; min-width: 180px; }
+
+  .toolbar select { cursor: pointer; }
+
+  .sort-btn {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text2);
+    padding: 8px 12px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .sort-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .sort-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  /* === GRID === */
+  .flambee-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+  }
+
+  /* === CARD === */
+  .flambee-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: box-shadow 0.15s, transform 0.15s;
+    cursor: pointer;
+  }
+
+  .flambee-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+  }
+
+  .card-img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    background: linear-gradient(135deg, #c84b0a22, #e8680d22);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+  }
+
+  .card-img img { width: 100%; height: 100%; object-fit: cover; }
+
+  .card-body { padding: 14px; }
+
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 6px;
+  }
+
+  .card-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    font-family: var(--font);
+    flex: 1;
+    margin-right: 8px;
+  }
+
+  .card-score {
+    background: var(--accent);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+
+  .card-score.score-top { background: #b45309; }
+
+  .card-resto {
+    font-size: 13px;
+    color: var(--text2);
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .card-meta {
+    display: flex;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text3);
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+
+  .card-tag {
+    background: var(--amber-bg);
+    color: var(--gold);
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .card-tag.trad { background: var(--teal-bg); color: var(--teal); }
+  .card-tag.fav { background: #fce7e7; color: #dc2626; }
+
+  .card-stars {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 8px;
+  }
+
+  .mini-star { font-size: 12px; }
+
+  .card-criteria {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .crit-badge {
+    font-size: 11px;
+    color: var(--text3);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 2px 7px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .crit-badge .crit-val {
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .card-note {
+    font-size: 12px;
+    color: var(--text2);
+    margin-top: 8px;
+    font-style: italic;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* === EMPTY === */
+  .empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--text3);
+  }
+
+  .empty-state .icon { font-size: 56px; margin-bottom: 16px; }
+  .empty-state h3 { font-size: 18px; color: var(--text2); margin-bottom: 8px; }
+  .empty-state p { font-size: 14px; }
+
+  /* === MODAL === */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(44,31,14,0.6);
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--card);
+    border-radius: var(--radius);
+    width: 100%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .modal-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    background: var(--card);
+    z-index: 1;
+  }
+
+  .modal-header h2 {
+    font-size: 18px;
+    font-family: var(--font);
+    color: var(--text);
+  }
+
+  .modal-close {
+    background: none;
+    border: none;
+    font-size: 22px;
+    color: var(--text3);
+    cursor: pointer;
+    line-height: 1;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: background 0.1s;
+  }
+
+  .modal-close:hover { background: var(--bg); }
+
+  .modal-body { padding: 20px 24px; }
+
+  .modal-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 20px;
+    background: var(--bg);
+    padding: 4px;
+    border-radius: var(--radius-sm);
+  }
+
+  .modal-tab {
+    flex: 1;
+    background: none;
+    border: none;
+    padding: 7px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--text2);
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+  }
+
+  .modal-tab.active {
+    background: var(--card);
+    color: var(--accent);
+    font-weight: 600;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  }
+
+  .modal-section { display: none; }
+  .modal-section.active { display: block; }
+
+  /* === FORM === */
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text2);
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    padding: 9px 12px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.15s;
+    font-family: var(--font-ui);
+  }
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus { border-color: var(--accent); }
+
+  .form-group textarea { resize: vertical; min-height: 80px; }
+
+  /* === STAR RATING === */
+  .star-rating {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+
+  .star-rating .star {
+    font-size: 22px;
+    cursor: pointer;
+    color: var(--star-off);
+    transition: color 0.1s, transform 0.1s;
+    user-select: none;
+  }
+
+  .star-rating .star:hover,
+  .star-rating .star.on { color: var(--star-on); }
+  .star-rating .star:hover { transform: scale(1.2); }
+
+  .criteria-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .crit-item label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 5px;
+  }
+
+  .crit-item .crit-score {
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 13px;
+  }
+
+  .crit-item .star { font-size: 18px; }
+
+  /* === PHOTO UPLOAD === */
+  .photo-drop {
+    border: 2px dashed var(--border2);
+    border-radius: var(--radius);
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 13px;
+    color: var(--text3);
+  }
+
+  .photo-drop:hover { border-color: var(--accent); color: var(--accent); }
+  .photo-drop .ph-icon { font-size: 32px; display: block; margin-bottom: 8px; }
+
+  .photo-preview {
+    width: 100%;
+    max-height: 200px;
+    border-radius: var(--radius-sm);
+    object-fit: cover;
+    margin-top: 12px;
+    display: none;
+  }
+
+  /* === TOGGLE === */
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+  }
+
+  .toggle-row label { font-size: 14px; color: var(--text); }
+
+  .toggle {
+    position: relative;
+    width: 40px;
+    height: 22px;
+  }
+
+  .toggle input { opacity: 0; width: 0; height: 0; }
+
+  .toggle-slider {
+    position: absolute;
+    inset: 0;
+    background: var(--border2);
+    border-radius: 11px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .toggle-slider::after {
+    content: '';
+    position: absolute;
+    width: 16px; height: 16px;
+    left: 3px; top: 3px;
+    background: #fff;
+    border-radius: 50%;
+    transition: transform 0.2s;
+  }
+
+  .toggle input:checked + .toggle-slider { background: var(--accent); }
+  .toggle input:checked + .toggle-slider::after { transform: translateX(18px); }
+
+  /* === MODAL FOOTER === */
+  .modal-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    position: sticky;
+    bottom: 0;
+    background: var(--card);
+  }
+
+  .btn {
+    padding: 9px 20px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.15s;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  .btn-primary:hover { background: var(--accent2); }
+
+  .btn-secondary {
+    background: var(--card);
+    color: var(--text2);
+    border-color: var(--border);
+  }
+
+  .btn-secondary:hover { border-color: var(--border2); color: var(--text); }
+
+  .btn-danger {
+    background: none;
+    color: #dc2626;
+    border-color: #fca5a5;
+  }
+
+  .btn-danger:hover { background: #fef2f2; }
+
+  /* === CARTE === */
+  #map-container {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+
+  .map-placeholder {
+    text-align: center;
+    color: var(--text3);
+    padding: 40px;
+  }
+
+  .map-placeholder .icon { font-size: 48px; margin-bottom: 12px; display: block; }
+
+  .map-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .map-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+
+  .map-item:hover { border-color: var(--accent); }
+
+  .map-item-icon { font-size: 28px; }
+
+  .map-item-info { flex: 1; }
+  .map-item-name { font-size: 14px; font-weight: 700; color: var(--text); }
+  .map-item-loc { font-size: 12px; color: var(--text3); }
+  .map-item-score {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  /* === STATS === */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    text-align: center;
+  }
+
+  .stat-card .stat-icon { font-size: 28px; margin-bottom: 6px; display: block; }
+  .stat-card .stat-val { font-size: 26px; font-weight: 700; color: var(--accent); font-family: var(--font); }
+  .stat-card .stat-lbl { font-size: 12px; color: var(--text3); margin-top: 2px; }
+
+  .stats-section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  .stats-section h3 {
+    font-size: 16px;
+    font-family: var(--font);
+    color: var(--text);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* === CRITERIA BARS === */
+  .crit-bar-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .crit-bar-label {
+    font-size: 13px;
+    color: var(--text2);
+    width: 80px;
+    flex-shrink: 0;
+  }
+
+  .crit-bar-track {
+    flex: 1;
+    height: 8px;
+    background: var(--bg);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .crit-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 4px;
+    transition: width 0.5s ease;
+  }
+
+  .crit-bar-val {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    width: 30px;
+    text-align: right;
+  }
+
+  /* === TOP === */
+  .top-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .top-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    transition: box-shadow 0.15s, transform 0.15s;
+  }
+
+  .top-item:hover { box-shadow: var(--shadow); transform: translateX(4px); }
+
+  .top-rank {
+    font-size: 22px;
+    font-weight: 900;
+    font-family: var(--font);
+    color: var(--text3);
+    width: 32px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  .top-rank.r1 { color: #f59e0b; }
+  .top-rank.r2 { color: #9ca3af; }
+  .top-rank.r3 { color: #cd7c2f; }
+
+  .top-info { flex: 1; }
+  .top-name { font-size: 15px; font-weight: 700; color: var(--text); font-family: var(--font); }
+  .top-sub { font-size: 12px; color: var(--text3); margin-top: 2px; }
+
+  .top-score {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent);
+    font-family: var(--font);
+  }
+
+  .top-medal { font-size: 24px; }
+
+  /* === CALENDAR HEATMAP === */
+  .heatmap-months {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+
+  .heatmap-month {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 10px;
+    text-align: center;
+    min-width: 52px;
+  }
+
+  .heatmap-month .m-name { font-size: 11px; color: var(--text3); }
+  .heatmap-month .m-count {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    margin-top: 2px;
+  }
+
+  .heatmap-month.has-data { background: var(--amber-bg); border-color: var(--amber); }
+  .heatmap-month.has-data .m-count { color: var(--gold); }
+
+  /* === CHART === */
+  canvas { display: block; width: 100% !important; }
+
+  /* === MENU ··· === */
+  .menu-btn {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text2);
+    padding: 8px 14px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+  }
+
+  .menu-btn:hover { border-color: var(--border2); }
+
+  .dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    width: 200px;
+    z-index: 50;
+    display: none;
+  }
+
+  .dropdown.open { display: block; }
+
+  .dropdown-item {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 11px 16px;
+    font-size: 14px;
+    color: var(--text);
+    cursor: pointer;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.1s;
+  }
+
+  .dropdown-item:hover { background: var(--bg); }
+  .dropdown-item:first-child { border-radius: var(--radius) var(--radius) 0 0; }
+  .dropdown-item:last-child { border-radius: 0 0 var(--radius) var(--radius); }
+  .dropdown-item.danger { color: #dc2626; }
+
+  /* === RESPONSIVE === */
+  @media (max-width: 600px) {
+    .header-stats { display: none; }
+    .criteria-grid { grid-template-columns: 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    .flambee-grid { grid-template-columns: 1fr; }
+  }
+
+  /* === TOAST === */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: #1a1208;
+    color: #fff;
+    padding: 11px 20px;
+    border-radius: 24px;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 999;
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div class="header-title">
+      <span class="flame">🔥</span>
+      <div>
+        <h1>Flambée</h1>
+      </div>
+    </div>
+    <div class="header-stats" id="header-stats"></div>
+    <button class="header-btn" onclick="openAddModal()">+ Ajouter</button>
+  </div>
+</header>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('collection', this)">🍕 Collection</button>
+    <button class="tab-btn" onclick="switchTab('carte', this)">📍 Carte</button>
+    <button class="tab-btn" onclick="switchTab('stats', this)">📊 Statistiques</button>
+    <button class="tab-btn" onclick="switchTab('top', this)">🏆 Top Flambées</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <!-- === COLLECTION === -->
+  <div id="tab-collection" class="tab-content active">
+    <div class="toolbar">
+      <input type="text" id="search" placeholder="🔍 Rechercher…" oninput="renderCollection()">
+      <select id="filter-ville" onchange="renderCollection()">
+        <option value="">Toutes villes</option>
+      </select>
+      <select id="filter-sort" onchange="renderCollection()">
+        <option value="date-desc">Plus récentes</option>
+        <option value="date-asc">Plus anciennes</option>
+        <option value="score-desc">Meilleures notes</option>
+        <option value="score-asc">Notes croissantes</option>
+        <option value="name-asc">Nom A→Z</option>
+      </select>
+      <button class="sort-btn" id="btn-fav" onclick="toggleFavFilter()" title="Coups de cœur">❤️</button>
+      <button class="sort-btn" id="btn-revisit" onclick="toggleRevisitFilter()" title="À revisiter">🔁</button>
+      <div style="position:relative;margin-left:auto">
+        <button class="menu-btn" onclick="toggleDropdown()">···</button>
+        <div class="dropdown" id="dropdown">
+          <button class="dropdown-item" onclick="exportCSV();closeDropdown()">📤 Exporter CSV</button>
+          <button class="dropdown-item" onclick="document.getElementById('import-file').click();closeDropdown()">📥 Importer CSV</button>
+          <button class="dropdown-item danger" onclick="if(confirm('Effacer toutes les données ?'))clearAll();closeDropdown()">🗑 Effacer tout</button>
+        </div>
+        <input type="file" id="import-file" accept=".csv" style="display:none" onchange="importCSV(event)">
+      </div>
+    </div>
+    <div class="flambee-grid" id="flambee-grid"></div>
+  </div>
+
+  <!-- === CARTE === -->
+  <div id="tab-carte" class="tab-content">
+    <div id="map-container">
+      <div class="map-placeholder">
+        <span class="icon">🗺️</span>
+        <p style="font-size:14px;color:var(--text2);margin-bottom:8px">Localisez vos restaurants</p>
+        <p style="font-size:13px">Les adresses s'ouvrent dans Google Maps</p>
+      </div>
+    </div>
+    <div class="map-list" id="map-list"></div>
+  </div>
+
+  <!-- === STATS === -->
+  <div id="tab-stats" class="tab-content">
+    <div class="stats-grid" id="stats-cards"></div>
+
+    <div class="stats-section">
+      <h3>🎯 Notes moyennes par critère</h3>
+      <div id="criteria-bars"></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+
+      <div class="stats-section">
+        <h3>🏙 Villes visitées</h3>
+        <div id="city-chart-container" style="height:200px">
+          <canvas id="city-chart"></canvas>
+        </div>
+      </div>
+
+      <div class="stats-section">
+        <h3>⭐ Distribution des notes</h3>
+        <div id="score-chart-container" style="height:200px">
+          <canvas id="score-chart"></canvas>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="stats-section">
+      <h3>📅 Fréquence de dégustation</h3>
+      <div class="heatmap-months" id="heatmap"></div>
+    </div>
+
+    <div class="stats-section">
+      <h3>📈 Évolution de la note dans le temps</h3>
+      <div style="height:220px">
+        <canvas id="timeline-chart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- === TOP === -->
+  <div id="tab-top" class="tab-content">
+    <div class="top-list" id="top-list"></div>
+  </div>
+
+</main>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalIfBg(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <h2 id="modal-title">Nouvelle tarte flambée</h2>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-tabs">
+        <button class="modal-tab active" onclick="switchModalTab('infos', this)">Infos</button>
+        <button class="modal-tab" onclick="switchModalTab('notes', this)">Notes</button>
+        <button class="modal-tab" onclick="switchModalTab('photo', this)">Photo</button>
+      </div>
+
+      <!-- INFOS -->
+      <div class="modal-section active" id="msec-infos">
+        <div class="form-group">
+          <label>Nom / Type de flambée</label>
+          <input type="text" id="f-name" placeholder="ex: Traditionnelle, Forestière, Gratinée…">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Restaurant / Winstub</label>
+            <input type="text" id="f-resto" placeholder="Nom du restaurant">
+          </div>
+          <div class="form-group">
+            <label>Ville</label>
+            <input type="text" id="f-ville" placeholder="Strasbourg, Obernai…">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Adresse</label>
+            <input type="text" id="f-adresse" placeholder="Rue, numéro">
+          </div>
+          <div class="form-group">
+            <label>Date de visite</label>
+            <input type="date" id="f-date">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Prix (€)</label>
+            <input type="number" id="f-prix" placeholder="12.50" step="0.5" min="0">
+          </div>
+          <div class="form-group">
+            <label>Type</label>
+            <select id="f-type">
+              <option value="traditionnelle">Traditionnelle</option>
+              <option value="gratinee">Gratinée</option>
+              <option value="forestiere">Forestière</option>
+              <option value="munster">Munster</option>
+              <option value="lardons-oignons">Lardons-oignons</option>
+              <option value="sucrée">Sucrée</option>
+              <option value="autre">Autre</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Notes libres</label>
+          <textarea id="f-notes" placeholder="Impressions, anecdotes, recommandations…"></textarea>
+        </div>
+        <div class="toggle-row">
+          <label>❤️ Coup de cœur</label>
+          <label class="toggle"><input type="checkbox" id="f-fav"><span class="toggle-slider"></span></label>
+        </div>
+        <div class="toggle-row">
+          <label>🔁 À revisiter</label>
+          <label class="toggle"><input type="checkbox" id="f-revisit"><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+
+      <!-- NOTES -->
+      <div class="modal-section" id="msec-notes">
+        <div style="margin-bottom:20px">
+          <label style="display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px">Note globale</label>
+          <div class="star-rating" id="rating-global">
+            <span class="star" data-v="1">★</span>
+            <span class="star" data-v="2">★</span>
+            <span class="star" data-v="3">★</span>
+            <span class="star" data-v="4">★</span>
+            <span class="star" data-v="5">★</span>
+          </div>
+          <input type="hidden" id="f-score" value="0">
+        </div>
+
+        <div class="criteria-grid" id="criteria-inputs">
+          <!-- Généré dynamiquement -->
+        </div>
+      </div>
+
+      <!-- PHOTO -->
+      <div class="modal-section" id="msec-photo">
+        <div class="form-group">
+          <label>Photo (URL ou upload)</label>
+          <input type="text" id="f-photo-url" placeholder="https://… ou collez une URL">
+        </div>
+        <div class="photo-drop" id="photo-drop" onclick="document.getElementById('f-photo-file').click()">
+          <span class="ph-icon">📷</span>
+          Cliquez pour choisir une photo<br>
+          <span style="font-size:11px;opacity:0.7">(JPEG, PNG — stockée en base64)</span>
+          <input type="file" id="f-photo-file" accept="image/*" style="display:none" onchange="handlePhotoUpload(event)">
+        </div>
+        <img id="f-photo-preview" class="photo-preview" alt="Aperçu">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger" id="btn-delete" onclick="deleteCurrentFlambee()" style="display:none;margin-right:auto">Supprimer</button>
+      <button class="btn btn-secondary" onclick="closeModal()">Annuler</button>
+      <button class="btn btn-primary" onclick="saveFlambee()">Enregistrer 🔥</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+/* ==================== DONNÉES ==================== */
+
+const CRITERIA = [
+  { key: 'pate',      label: '🫓 Pâte',       desc: 'Épaisseur et cuisson' },
+  { key: 'garniture', label: '🧅 Garniture',   desc: 'Générosité et équilibre' },
+  { key: 'creme',     label: '🥛 Crème',       desc: 'Qualité et répartition' },
+  { key: 'cuisson',   label: '🔥 Flambée',     desc: 'Cuisson au four' },
+  { key: 'cadre',     label: '🏠 Cadre',       desc: 'Winstub et ambiance' },
+];
+
+const MONTHS = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+
+/* __FLAMBEES_DATA__ */
+let FLAMBEES = [];
+
+/* Charger depuis localStorage au démarrage */
+(function() {
+  const stored = localStorage.getItem('flambees_data');
+  if (stored) {
+    try { FLAMBEES = JSON.parse(stored); } catch(e) {}
+  }
+})();
+
+function save() {
+  localStorage.setItem('flambees_data', JSON.stringify(FLAMBEES));
+}
+
+/* ==================== ÉTAT ==================== */
+let editingId = null;
+let showFavOnly = false;
+let showRevisitOnly = false;
+let charts = {};
+
+/* ==================== NAVIGATION ==================== */
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+
+  if (name === 'stats') renderStats();
+  if (name === 'top') renderTop();
+  if (name === 'carte') renderCarte();
+}
+
+/* ==================== FILTRES ==================== */
+function toggleFavFilter() {
+  showFavOnly = !showFavOnly;
+  showRevisitOnly = false;
+  document.getElementById('btn-fav').classList.toggle('active', showFavOnly);
+  document.getElementById('btn-revisit').classList.remove('active');
+  renderCollection();
+}
+
+function toggleRevisitFilter() {
+  showRevisitOnly = !showRevisitOnly;
+  showFavOnly = false;
+  document.getElementById('btn-revisit').classList.toggle('active', showRevisitOnly);
+  document.getElementById('btn-fav').classList.remove('active');
+  renderCollection();
+}
+
+/* ==================== COLLECTION ==================== */
+function renderCollection() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const ville = document.getElementById('filter-ville').value;
+  const sort = document.getElementById('filter-sort').value;
+
+  let list = FLAMBEES.filter(f => {
+    if (showFavOnly && !f.fav) return false;
+    if (showRevisitOnly && !f.revisit) return false;
+    if (ville && f.ville !== ville) return false;
+    if (q) {
+      const hay = `${f.name} ${f.resto} ${f.ville} ${f.notes}`.toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  list.sort((a, b) => {
+    switch (sort) {
+      case 'date-desc': return (b.date || '').localeCompare(a.date || '');
+      case 'date-asc':  return (a.date || '').localeCompare(b.date || '');
+      case 'score-desc': return getScore(b) - getScore(a);
+      case 'score-asc':  return getScore(a) - getScore(b);
+      case 'name-asc':   return a.name.localeCompare(b.name);
+      default: return 0;
+    }
+  });
+
+  const grid = document.getElementById('flambee-grid');
+  if (!list.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+      <div class="icon">🔥</div>
+      <h3>Aucune tarte flambée</h3>
+      <p>Cliquez sur "+ Ajouter" pour commencer votre collection</p>
+    </div>`;
+    return;
+  }
+
+  grid.innerHTML = list.map(f => cardHTML(f)).join('');
+
+  // Mise à jour filtre villes
+  const villes = [...new Set(FLAMBEES.map(f => f.ville).filter(Boolean))].sort();
+  const sel = document.getElementById('filter-ville');
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">Toutes villes</option>' +
+    villes.map(v => `<option value="${v}" ${v === cur ? 'selected' : ''}>${v}</option>`).join('');
+}
+
+function getScore(f) {
+  if (f.score) return Number(f.score);
+  const vals = CRITERIA.map(c => Number(f.criteria?.[c.key] || 0)).filter(v => v > 0);
+  return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
+}
+
+function getScoreDisplay(f) {
+  const s = getScore(f);
+  return s > 0 ? s.toFixed(1) : '—';
+}
+
+function starsHTML(n, max = 5) {
+  let h = '';
+  for (let i = 1; i <= max; i++) h += `<span class="mini-star">${i <= n ? '★' : '☆'}</span>`;
+  return h;
+}
+
+function cardHTML(f) {
+  const score = getScore(f);
+  const scoreClass = score >= 4.5 ? 'score-top' : '';
+  const imgPart = f.photo
+    ? `<div class="card-img"><img src="${f.photo}" alt="${f.name}" loading="lazy"></div>`
+    : `<div class="card-img"><span style="opacity:0.4">🔥</span></div>`;
+  const critHTML = CRITERIA.map(c => {
+    const v = f.criteria?.[c.key] || 0;
+    if (!v) return '';
+    return `<span class="crit-badge">${c.label.split(' ')[0]} <span class="crit-val">${v}/5</span></span>`;
+  }).join('');
+
+  return `<div class="flambee-card" onclick="openEditModal('${f.id}')">
+    ${imgPart}
+    <div class="card-body">
+      <div class="card-top">
+        <div class="card-name">${f.name || 'Tarte flambée'}</div>
+        ${score > 0 ? `<div class="card-score ${scoreClass}">${score.toFixed(1)}/5</div>` : ''}
+      </div>
+      <div class="card-resto">📍 ${f.resto || ''}${f.ville ? ` · ${f.ville}` : ''}</div>
+      <div class="card-meta">
+        ${f.date ? `<span>${formatDate(f.date)}</span>` : ''}
+        ${f.prix ? `<span>${Number(f.prix).toFixed(2)} €</span>` : ''}
+        ${f.type && f.type !== 'autre' ? `<span class="card-tag">${f.type}</span>` : ''}
+        ${f.fav ? '<span class="card-tag fav">❤️ Coup de cœur</span>' : ''}
+        ${f.revisit ? '<span class="card-tag trad">🔁 Revisiter</span>' : ''}
+      </div>
+      ${score > 0 ? `<div class="card-stars">${starsHTML(Math.round(score))}</div>` : ''}
+      ${critHTML ? `<div class="card-criteria">${critHTML}</div>` : ''}
+      ${f.notes ? `<div class="card-note">${f.notes}</div>` : ''}
+    </div>
+  </div>`;
+}
+
+function formatDate(d) {
+  if (!d) return '';
+  const [y, m, day] = d.split('-');
+  return `${day}/${m}/${y}`;
+}
+
+/* ==================== HEADER ==================== */
+function updateHeader() {
+  const total = FLAMBEES.length;
+  const favs = FLAMBEES.filter(f => f.fav).length;
+  const villes = new Set(FLAMBEES.map(f => f.ville).filter(Boolean)).size;
+  const scores = FLAMBEES.map(f => getScore(f)).filter(s => s > 0);
+  const avg = scores.length ? (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(1) : '—';
+  document.getElementById('header-stats').innerHTML = `
+    <div class="header-stat"><span class="val">${total}</span><span class="lbl">Flambées</span></div>
+    <div class="header-stat"><span class="val">${villes}</span><span class="lbl">Villes</span></div>
+    <div class="header-stat"><span class="val">${avg}</span><span class="lbl">Moy. /5</span></div>
+    <div class="header-stat"><span class="val">${favs}</span><span class="lbl">Favoris</span></div>
+  `;
+}
+
+/* ==================== MODAL ==================== */
+function buildCriteriaInputs() {
+  const container = document.getElementById('criteria-inputs');
+  container.innerHTML = CRITERIA.map(c => `
+    <div class="crit-item">
+      <label>
+        <span>${c.label}</span>
+        <span class="crit-score" id="score-label-${c.key}">0</span>
+      </label>
+      <div class="star-rating" data-crit="${c.key}">
+        ${[1,2,3,4,5].map(v => `<span class="star" data-v="${v}">★</span>`).join('')}
+      </div>
+      <input type="hidden" id="f-crit-${c.key}" value="0">
+    </div>
+  `).join('');
+
+  // Stars click pour critères
+  container.querySelectorAll('.star-rating[data-crit]').forEach(sr => {
+    const key = sr.dataset.crit;
+    sr.querySelectorAll('.star').forEach(star => {
+      star.addEventListener('click', () => {
+        const v = Number(star.dataset.v);
+        document.getElementById('f-crit-' + key).value = v;
+        document.getElementById('score-label-' + key).textContent = v;
+        updateStars(sr, v);
+      });
+    });
+  });
+}
+
+function initGlobalStars() {
+  const sr = document.getElementById('rating-global');
+  sr.querySelectorAll('.star').forEach(star => {
+    star.addEventListener('click', () => {
+      const v = Number(star.dataset.v);
+      document.getElementById('f-score').value = v;
+      updateStars(sr, v);
+    });
+  });
+}
+
+function updateStars(container, val) {
+  container.querySelectorAll('.star').forEach(s => {
+    s.classList.toggle('on', Number(s.dataset.v) <= val);
+  });
+}
+
+function setStars(container, val) {
+  updateStars(container, val);
+}
+
+function switchModalTab(name, btn) {
+  document.querySelectorAll('.modal-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.modal-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('msec-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+function openAddModal() {
+  editingId = null;
+  document.getElementById('modal-title').textContent = 'Nouvelle tarte flambée 🔥';
+  document.getElementById('btn-delete').style.display = 'none';
+  resetForm();
+  document.getElementById('modal-overlay').classList.add('open');
+  document.getElementById('f-name').focus();
+}
+
+function openEditModal(id) {
+  const f = FLAMBEES.find(x => x.id === id);
+  if (!f) return;
+  editingId = id;
+  document.getElementById('modal-title').textContent = 'Modifier · ' + (f.name || 'Tarte flambée');
+  document.getElementById('btn-delete').style.display = '';
+  fillForm(f);
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function resetForm() {
+  ['name','resto','ville','adresse','notes','photo-url'].forEach(k => {
+    const el = document.getElementById('f-' + k);
+    if (el) el.value = '';
+  });
+  document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('f-prix').value = '';
+  document.getElementById('f-type').value = 'traditionnelle';
+  document.getElementById('f-fav').checked = false;
+  document.getElementById('f-revisit').checked = false;
+  document.getElementById('f-score').value = 0;
+  document.getElementById('f-photo-preview').style.display = 'none';
+
+  updateStars(document.getElementById('rating-global'), 0);
+
+  CRITERIA.forEach(c => {
+    document.getElementById('f-crit-' + c.key).value = 0;
+    document.getElementById('score-label-' + c.key).textContent = 0;
+    const sr = document.querySelector(`.star-rating[data-crit="${c.key}"]`);
+    if (sr) updateStars(sr, 0);
+  });
+
+  // Reset modal tabs
+  document.querySelectorAll('.modal-section').forEach((s,i) => s.classList.toggle('active', i===0));
+  document.querySelectorAll('.modal-tab').forEach((b,i) => b.classList.toggle('active', i===0));
+}
+
+function fillForm(f) {
+  document.getElementById('f-name').value = f.name || '';
+  document.getElementById('f-resto').value = f.resto || '';
+  document.getElementById('f-ville').value = f.ville || '';
+  document.getElementById('f-adresse').value = f.adresse || '';
+  document.getElementById('f-date').value = f.date || '';
+  document.getElementById('f-prix').value = f.prix || '';
+  document.getElementById('f-type').value = f.type || 'traditionnelle';
+  document.getElementById('f-notes').value = f.notes || '';
+  document.getElementById('f-fav').checked = !!f.fav;
+  document.getElementById('f-revisit').checked = !!f.revisit;
+  document.getElementById('f-score').value = f.score || 0;
+  document.getElementById('f-photo-url').value = '';
+
+  setStars(document.getElementById('rating-global'), Number(f.score || 0));
+
+  CRITERIA.forEach(c => {
+    const v = f.criteria?.[c.key] || 0;
+    document.getElementById('f-crit-' + c.key).value = v;
+    document.getElementById('score-label-' + c.key).textContent = v;
+    const sr = document.querySelector(`.star-rating[data-crit="${c.key}"]`);
+    if (sr) updateStars(sr, v);
+  });
+
+  const prev = document.getElementById('f-photo-preview');
+  if (f.photo) {
+    prev.src = f.photo;
+    prev.style.display = 'block';
+  } else {
+    prev.style.display = 'none';
+  }
+
+  // Reset modal tabs
+  document.querySelectorAll('.modal-section').forEach((s,i) => s.classList.toggle('active', i===0));
+  document.querySelectorAll('.modal-tab').forEach((b,i) => b.classList.toggle('active', i===0));
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+
+function closeModalIfBg(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+}
+
+function saveFlambee() {
+  const name = document.getElementById('f-name').value.trim();
+  if (!name) { toast('⚠️ Donnez un nom à cette flambée'); return; }
+
+  const photoURL = document.getElementById('f-photo-url').value.trim();
+  const photoPrev = document.getElementById('f-photo-preview');
+  const photo = photoURL || (photoPrev.style.display !== 'none' ? photoPrev.src : '');
+
+  const criteria = {};
+  CRITERIA.forEach(c => { criteria[c.key] = Number(document.getElementById('f-crit-' + c.key).value); });
+
+  const f = {
+    id: editingId || 'f' + Date.now(),
+    name,
+    resto: document.getElementById('f-resto').value.trim(),
+    ville: document.getElementById('f-ville').value.trim(),
+    adresse: document.getElementById('f-adresse').value.trim(),
+    date: document.getElementById('f-date').value,
+    prix: document.getElementById('f-prix').value,
+    type: document.getElementById('f-type').value,
+    notes: document.getElementById('f-notes').value.trim(),
+    fav: document.getElementById('f-fav').checked,
+    revisit: document.getElementById('f-revisit').checked,
+    score: Number(document.getElementById('f-score').value),
+    criteria,
+    photo,
+  };
+
+  if (editingId) {
+    const idx = FLAMBEES.findIndex(x => x.id === editingId);
+    if (idx !== -1) FLAMBEES[idx] = f;
+    toast('✅ Tarte flambée modifiée !');
+  } else {
+    FLAMBEES.unshift(f);
+    toast('🔥 Tarte flambée ajoutée !');
+  }
+
+  save();
+  closeModal();
+  renderAll();
+}
+
+function deleteCurrentFlambee() {
+  if (!editingId) return;
+  if (!confirm('Supprimer cette tarte flambée ?')) return;
+  FLAMBEES = FLAMBEES.filter(f => f.id !== editingId);
+  save();
+  closeModal();
+  renderAll();
+  toast('🗑 Supprimée');
+}
+
+/* ==================== CARTE === */
+function renderCarte() {
+  const list = document.getElementById('map-list');
+  const sorted = [...FLAMBEES].sort((a, b) => getScore(b) - getScore(a));
+
+  list.innerHTML = sorted.map(f => {
+    const score = getScore(f);
+    const gmUrl = f.adresse && f.ville
+      ? `https://www.google.com/maps/search/${encodeURIComponent((f.adresse + ' ' + f.ville).trim())}`
+      : f.ville
+        ? `https://www.google.com/maps/search/${encodeURIComponent(f.ville + ' restaurant')}`
+        : '#';
+    return `<div class="map-item" onclick="openMap('${gmUrl}')">
+      <div class="map-item-icon">${f.photo ? `<img src="${f.photo}" style="width:40px;height:40px;border-radius:8px;object-fit:cover">` : '🏠'}</div>
+      <div class="map-item-info">
+        <div class="map-item-name">${f.name}</div>
+        <div class="map-item-loc">📍 ${f.resto || ''}${f.ville ? ` · ${f.ville}` : ''}</div>
+      </div>
+      ${score > 0 ? `<div class="map-item-score">★ ${score.toFixed(1)}</div>` : ''}
+    </div>`;
+  }).join('') || '<p style="color:var(--text3);text-align:center;padding:20px">Aucun restaurant enregistré</p>';
+}
+
+function openMap(url) {
+  if (url !== '#') window.open(url, '_blank');
+}
+
+/* ==================== STATS ==================== */
+function renderStats() {
+  if (!FLAMBEES.length) {
+    document.getElementById('stats-cards').innerHTML = '<p style="color:var(--text3);grid-column:1/-1">Aucune donnée</p>';
+    return;
+  }
+
+  // Cartes globales
+  const scores = FLAMBEES.map(f => getScore(f)).filter(s => s > 0);
+  const avg = scores.length ? (scores.reduce((a,b)=>a+b,0)/scores.length) : 0;
+  const best = scores.length ? Math.max(...scores) : 0;
+  const villes = new Set(FLAMBEES.map(f => f.ville).filter(Boolean)).size;
+  const restos = new Set(FLAMBEES.map(f => f.resto).filter(Boolean)).size;
+  const favs = FLAMBEES.filter(f => f.fav).length;
+  const prix = FLAMBEES.map(f => Number(f.prix)).filter(v => v > 0);
+  const avgPrix = prix.length ? prix.reduce((a,b)=>a+b,0)/prix.length : 0;
+
+  document.getElementById('stats-cards').innerHTML = [
+    { icon:'🔥', val: FLAMBEES.length, lbl:'Flambées dégustées' },
+    { icon:'⭐', val: avg.toFixed(2), lbl:'Note moyenne /5' },
+    { icon:'🏆', val: best.toFixed(1), lbl:'Meilleure note' },
+    { icon:'📍', val: villes, lbl:'Villes visitées' },
+    { icon:'🏠', val: restos, lbl:'Restaurants' },
+    { icon:'❤️', val: favs, lbl:'Coups de cœur' },
+    { icon:'💶', val: avgPrix ? avgPrix.toFixed(2)+' €' : '—', lbl:'Prix moyen' },
+    { icon:'🔁', val: FLAMBEES.filter(f=>f.revisit).length, lbl:'À revisiter' },
+  ].map(s => `<div class="stat-card">
+    <span class="stat-icon">${s.icon}</span>
+    <div class="stat-val">${s.val}</div>
+    <div class="stat-lbl">${s.lbl}</div>
+  </div>`).join('');
+
+  // Barres critères
+  const critBars = document.getElementById('criteria-bars');
+  critBars.innerHTML = CRITERIA.map(c => {
+    const vals = FLAMBEES.map(f => Number(f.criteria?.[c.key] || 0)).filter(v => v > 0);
+    const avg = vals.length ? vals.reduce((a,b)=>a+b,0)/vals.length : 0;
+    const pct = (avg / 5) * 100;
+    return `<div class="crit-bar-item">
+      <div class="crit-bar-label">${c.label}</div>
+      <div class="crit-bar-track"><div class="crit-bar-fill" style="width:${pct}%"></div></div>
+      <div class="crit-bar-val">${avg ? avg.toFixed(1) : '—'}</div>
+    </div>`;
+  }).join('');
+
+  // Villes chart
+  const villeMap = {};
+  FLAMBEES.forEach(f => { if(f.ville) villeMap[f.ville] = (villeMap[f.ville]||0)+1; });
+  const villesSorted = Object.entries(villeMap).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  renderChart('city-chart', {
+    type: 'bar',
+    data: {
+      labels: villesSorted.map(v=>v[0]),
+      datasets: [{ data: villesSorted.map(v=>v[1]), backgroundColor: '#c84b0a', borderRadius: 6 }]
+    },
+    options: { plugins:{ legend:{display:false} }, scales:{ y:{beginAtZero:true, ticks:{stepSize:1} } } }
+  });
+
+  // Distribution notes
+  const buckets = [0,0,0,0,0];
+  scores.forEach(s => { const idx = Math.min(4, Math.floor((s-0.001)/1)); if(idx>=0) buckets[idx]++; });
+  renderChart('score-chart', {
+    type: 'bar',
+    data: {
+      labels: ['1 ★','2 ★','3 ★','4 ★','5 ★'],
+      datasets: [{ data: buckets, backgroundColor: ['#e87b0d44','#e87b0d66','#e87b0d88','#c84b0aaa','#c84b0a'], borderRadius: 6 }]
+    },
+    options: { plugins:{ legend:{display:false} }, scales:{ y:{beginAtZero:true, ticks:{stepSize:1} } } }
+  });
+
+  // Heatmap mois
+  const monthMap = {};
+  FLAMBEES.forEach(f => {
+    if (f.date) {
+      const m = parseInt(f.date.split('-')[1]) - 1;
+      monthMap[m] = (monthMap[m]||0)+1;
+    }
+  });
+  document.getElementById('heatmap').innerHTML = MONTHS.map((m,i) => {
+    const c = monthMap[i] || 0;
+    return `<div class="heatmap-month${c?` has-data`:''}">
+      <div class="m-name">${m}</div>
+      <div class="m-count">${c}</div>
+    </div>`;
+  }).join('');
+
+  // Timeline
+  const byDate = FLAMBEES.filter(f=>f.date && getScore(f)>0)
+    .sort((a,b)=>a.date.localeCompare(b.date));
+  renderChart('timeline-chart', {
+    type: 'line',
+    data: {
+      labels: byDate.map(f=>formatDate(f.date)),
+      datasets: [{
+        label:'Note',
+        data: byDate.map(f=>getScore(f).toFixed(2)),
+        borderColor:'#c84b0a',
+        backgroundColor:'#c84b0a22',
+        fill:true,
+        tension:0.4,
+        pointBackgroundColor:'#c84b0a',
+        pointRadius:4,
+      }]
+    },
+    options: { plugins:{ legend:{display:false} }, scales:{ y:{min:0, max:5} } }
+  });
+}
+
+function renderChart(id, config) {
+  if (charts[id]) { charts[id].destroy(); }
+  const canvas = document.getElementById(id);
+  if (!canvas) return;
+  const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const gridColor = isDark ? '#3d2e1844' : '#e8dcc866';
+  const textColor = isDark ? '#c4a882' : '#6b5744';
+  config.options = config.options || {};
+  config.options.responsive = true;
+  config.options.maintainAspectRatio = false;
+  config.options.plugins = config.options.plugins || {};
+  config.options.plugins.tooltip = { callbacks: {} };
+  if (config.options.scales) {
+    ['x','y'].forEach(ax => {
+      if (config.options.scales[ax]) {
+        config.options.scales[ax].grid = { color: gridColor };
+        config.options.scales[ax].ticks = { ...config.options.scales[ax].ticks, color: textColor };
+      }
+    });
+  }
+  charts[id] = new Chart(canvas, config);
+}
+
+/* ==================== TOP ==================== */
+function renderTop() {
+  const list = document.getElementById('top-list');
+  const sorted = [...FLAMBEES]
+    .filter(f => getScore(f) > 0)
+    .sort((a,b) => getScore(b) - getScore(a));
+
+  if (!sorted.length) {
+    list.innerHTML = '<div class="empty-state"><div class="icon">🏆</div><h3>Aucune note saisie</h3></div>';
+    return;
+  }
+
+  const medals = ['🥇','🥈','🥉'];
+  list.innerHTML = sorted.map((f, i) => {
+    const score = getScore(f);
+    const rankCls = i === 0 ? 'r1' : i === 1 ? 'r2' : i === 2 ? 'r3' : '';
+    return `<div class="top-item" onclick="openEditModal('${f.id}')">
+      ${i < 3 ? `<div class="top-medal">${medals[i]}</div>` : `<div class="top-rank ${rankCls}">${i+1}</div>`}
+      <div class="top-info">
+        <div class="top-name">${f.name}</div>
+        <div class="top-sub">📍 ${f.resto || 'Restaurant inconnu'}${f.ville ? ` · ${f.ville}` : ''}${f.date ? ` · ${formatDate(f.date)}` : ''}</div>
+      </div>
+      <div class="top-score">★ ${score.toFixed(1)}</div>
+    </div>`;
+  }).join('');
+}
+
+/* ==================== EXPORT/IMPORT ==================== */
+function exportCSV() {
+  const headers = ['id','name','resto','ville','adresse','date','prix','type','score','notes','fav','revisit',...CRITERIA.map(c=>c.key)];
+  const rows = FLAMBEES.map(f => headers.map(h => {
+    if (CRITERIA.some(c=>c.key===h)) return f.criteria?.[h] || 0;
+    const v = f[h];
+    if (typeof v === 'string' && v.includes(',')) return `"${v}"`;
+    return v ?? '';
+  }).join(','));
+  const csv = [headers.join(','), ...rows].join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = `flambees_${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+  toast('📤 Export CSV téléchargé');
+}
+
+function importCSV(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = evt => {
+    const lines = evt.target.result.split('\n').filter(l=>l.trim());
+    const headers = lines[0].split(',');
+    const imported = [];
+    for (let i = 1; i < lines.length; i++) {
+      const vals = lines[i].split(',');
+      const obj = {};
+      headers.forEach((h,j) => { obj[h] = vals[j]?.replace(/^"|"$/g,'') || ''; });
+      const criteria = {};
+      CRITERIA.forEach(c => { criteria[c.key] = Number(obj[c.key]||0); });
+      imported.push({ ...obj, criteria, fav: obj.fav==='true', revisit: obj.revisit==='true', score: Number(obj.score||0) });
+    }
+    FLAMBEES = imported;
+    save();
+    renderAll();
+    toast(`📥 ${imported.length} entrées importées`);
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+
+function clearAll() {
+  FLAMBEES = [];
+  save();
+  renderAll();
+  toast('🗑 Données effacées');
+}
+
+/* ==================== DROPDOWN ==================== */
+function toggleDropdown() {
+  document.getElementById('dropdown').classList.toggle('open');
+}
+
+function closeDropdown() {
+  document.getElementById('dropdown').classList.remove('open');
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.menu-btn') && !e.target.closest('.dropdown')) closeDropdown();
+});
+
+/* ==================== PHOTO ==================== */
+function handlePhotoUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = evt => {
+    const prev = document.getElementById('f-photo-preview');
+    prev.src = evt.target.result;
+    prev.style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+document.getElementById('f-photo-url').addEventListener('input', function() {
+  const prev = document.getElementById('f-photo-preview');
+  if (this.value.trim()) {
+    prev.src = this.value.trim();
+    prev.style.display = 'block';
+  } else {
+    prev.style.display = 'none';
+  }
+});
+
+/* ==================== TOAST ==================== */
+function toast(msg, dur = 2500) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), dur);
+}
+
+/* ==================== INIT ==================== */
+function renderAll() {
+  updateHeader();
+  renderCollection();
+}
+
+buildCriteriaInputs();
+initGlobalStars();
+renderAll();
+</script>
+</body>
+</html>
