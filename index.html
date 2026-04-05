@@ -648,19 +648,56 @@
     position: relative;
   }
   #leaflet-map { width: 100%; height: 100%; }
-  .leaflet-marker-label {
-    background: var(--accent);
+  .leaflet-pin {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+  }
+  .leaflet-pin-bubble {
+    background: #c84b0a;
     color: #fff;
-    border-radius: 20px;
-    padding: 3px 8px;
+    border-radius: 10px;
+    padding: 4px 9px 4px 8px;
     font-size: 12px;
     font-weight: 700;
     border: 2px solid #fff;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.35);
     white-space: nowrap;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    line-height: 1.2;
+    max-width: 140px;
   }
-  .leaflet-marker-label.no-score {
-    background: var(--text3);
+  .leaflet-pin-bubble.no-score {
+    background: #888;
+  }
+  .leaflet-pin-name {
+    font-size: 11px;
+    font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 120px;
+  }
+  .leaflet-pin-score {
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+  }
+  .leaflet-pin-tail {
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 8px solid #c84b0a;
+    margin-top: -1px;
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
+  }
+  .no-score .leaflet-pin-tail {
+    border-top-color: #888;
   }
 
   .map-placeholder {
@@ -1716,13 +1753,19 @@ async function geocodeAndPlaceMarkers(flambees) {
     const score = getScore(f);
     const scoreStr = score > 0 ? score.toFixed(1) : '';
 
-    // Marqueur personnalisé avec la note
+    // Marqueur personnalisé avec nom + note
+    const name = (f.resto || f.name || '').substring(0, 20) + ((f.resto || f.name || '').length > 20 ? '…' : '');
+    const bubbleClass = 'leaflet-pin-bubble' + (scoreStr ? '' : ' no-score');
+    const inner = scoreStr
+      ? '<span class="leaflet-pin-name">' + name + '</span><span class="leaflet-pin-score">★ ' + scoreStr + '</span>'
+      : '<span class="leaflet-pin-name">' + name + '</span>';
+    const html = '<div class="leaflet-pin"><div class="' + bubbleClass + '">' + inner + '</div><div class="leaflet-pin-tail' + (scoreStr ? '' : ' no-score') + '"></div></div>';
+    const bubbleW = Math.min(140, name.length * 7 + 24);
     const icon = L.divIcon({
       className: '',
-      html: '<div class="leaflet-marker-label' + (scoreStr ? '' : ' no-score') + '">'
-        + (scoreStr ? '★ ' + scoreStr : '📍')
-        + '</div>',
-      iconAnchor: [20, 12]
+      html: html,
+      iconAnchor: [bubbleW / 2, scoreStr ? 44 : 36],
+      iconSize: [bubbleW, scoreStr ? 44 : 36]
     });
 
     const marker = L.marker([lat, lng], { icon })
