@@ -1052,10 +1052,10 @@
       <!-- INFOS -->
       <div class="modal-section active" id="msec-infos">
         <div class="form-row">
-          <div class="form-group">
+          <div class="form-group" style="position:relative">
             <label>Restaurant / Winstub</label>
-            <input type="text" id="f-resto" placeholder="Nom du restaurant" list="resto-suggestions" autocomplete="off">
-            <datalist id="resto-suggestions"></datalist>
+            <input type="text" id="f-resto" placeholder="Nom du restaurant" autocomplete="off" oninput="onRestoInput(this.value)">
+            <div id="resto-dropdown" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);box-shadow:var(--shadow-lg);z-index:200;max-height:220px;overflow-y:auto;margin-top:2px"></div>
           </div>
           <div class="form-group">
             <label>Ville</label>
@@ -1390,12 +1390,72 @@ function switchModalTab(name, btn) {
   btn.classList.add('active');
 }
 
-function updateRestoSuggestions() {
-  const dl = document.getElementById('resto-suggestions');
-  if (!dl) return;
-  const restos = [...new Set(FLAMBEES.map(f => f.resto).filter(Boolean))].sort();
-  dl.innerHTML = restos.map(r => `<option value="${r}">`).join('');
+function updateRestoSuggestions() {}
+
+let _restoTimer = null;
+
+function onRestoInput(val) {
+  clearTimeout(_restoTimer);
+  const dd = document.getElementById('resto-dropdown');
+  const local = [...new Set(FLAMBEES.map(f => f.resto).filter(r => r && r.toLowerCase().includes(val.toLowerCase())))];
+  if (val.length < 2) { dd.style.display = 'none'; return; }
+  if (local.length) renderRestoDropdown(local.map(r => ({ name: r, local: true })));
+  _restoTimer = setTimeout(() => searchNominatim(val, local), 400);
 }
+
+async function searchNominatim(q, localResults) {
+  const dd = document.getElementById('resto-dropdown');
+  try {
+    const url = 'https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(q) + '&countrycodes=fr&bounded=1&viewbox=6.8,47.1,8.2,48.5&format=json&limit=8&addressdetails=1&namedetails=1';
+    const resp = await fetch(url, { headers: { 'Accept-Language': 'fr' } });
+    const results = await resp.json();
+    const amenities = ['restaurant','bar','cafe','fast_food','pub','biergarten','winstub'];
+    const remote = results
+      .filter(r => amenities.includes(r.type) || r.class === 'amenity')
+      .map(r => ({
+        name: r.namedetails?.name || r.display_name.split(',')[0],
+        address: [r.address?.road, r.address?.house_number].filter(Boolean).join(' '),
+        city: r.address?.city || r.address?.town || r.address?.village || '',
+        local: false
+      }));
+    renderRestoDropdown([...localResults.map(r => ({ name: r, local: true })), ...remote]);
+  } catch(e) {
+    renderRestoDropdown(localResults.map(r => ({ name: r, local: true })));
+  }
+}
+
+function renderRestoDropdown(items) {
+  const dd = document.getElementById('resto-dropdown');
+  if (!items.length) { dd.style.display = 'none'; return; }
+  dd.innerHTML = items.map((item, i) =>
+    '<div onclick="selectResto(' + i + ')" style="padding:9px 12px;cursor:pointer;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background=''">' +
+    '<span style="font-size:14px">' + (item.local ? '📖' : '📍') + '</span>' +
+    '<div><div style="font-size:13px;font-weight:600;color:var(--text)">' + item.name + '</div>' +
+    (!item.local && (item.address || item.city) ? '<div style="font-size:11px;color:var(--text3)">' + [item.address, item.city].filter(Boolean).join(', ') + '</div>' : '') +
+    '</div></div>'
+  ).join('');
+  dd._items = items;
+  dd.style.display = 'block';
+}
+
+function selectResto(i) {
+  const dd = document.getElementById('resto-dropdown');
+  const item = dd._items && dd._items[i];
+  if (!item) return;
+  document.getElementById('f-resto').value = item.name;
+  if (!item.local) {
+    if (item.address) document.getElementById('f-adresse').value = item.address;
+    if (item.city) document.getElementById('f-ville').value = item.city;
+  }
+  dd.style.display = 'none';
+}
+
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('#f-resto') && !e.target.closest('#resto-dropdown')) {
+    const dd = document.getElementById('resto-dropdown');
+    if (dd) dd.style.display = 'none';
+  }
+});
 
 function openAddModal() {
   editingId = null;
