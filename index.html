@@ -1427,15 +1427,22 @@ async function searchNominatim(q, localResults) {
 function renderRestoDropdown(items) {
   const dd = document.getElementById('resto-dropdown');
   if (!items.length) { dd.style.display = 'none'; return; }
-  dd.innerHTML = items.map((item, i) =>
-    '<div onclick="selectResto(' + i + ')" style="padding:9px 12px;cursor:pointer;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background=''">' +
-    '<span style="font-size:14px">' + (item.local ? '📖' : '📍') + '</span>' +
-    '<div><div style="font-size:13px;font-weight:600;color:var(--text)">' + item.name + '</div>' +
-    (!item.local && (item.address || item.city) ? '<div style="font-size:11px;color:var(--text3)">' + [item.address, item.city].filter(Boolean).join(', ') + '</div>' : '') +
-    '</div></div>'
-  ).join('');
+  dd.innerHTML = items.map((item, i) => {
+    const sub = (!item.local && (item.address || item.city))
+      ? '<div style="font-size:11px;color:var(--text3)">' + [item.address, item.city].filter(Boolean).join(', ') + '</div>'
+      : '';
+    return '<div class="resto-dd-item" data-i="' + i + '" style="padding:9px 12px;cursor:pointer;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px">'
+      + '<span style="font-size:14px">' + (item.local ? '\u{1F4D6}' : '\u{1F4CD}') + '</span>'
+      + '<div><div style="font-size:13px;font-weight:600;color:var(--text)">' + item.name + '</div>' + sub + '</div>'
+      + '</div>';
+  }).join('');
   dd._items = items;
   dd.style.display = 'block';
+  dd.querySelectorAll('.resto-dd-item').forEach(function(el) {
+    el.addEventListener('mouseenter', function() { this.style.background = 'var(--bg)'; });
+    el.addEventListener('mouseleave', function() { this.style.background = ''; });
+    el.addEventListener('click', function() { selectResto(parseInt(this.dataset.i)); });
+  });
 }
 
 function selectResto(i) {
