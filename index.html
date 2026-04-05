@@ -1054,7 +1054,8 @@
         <div class="form-row">
           <div class="form-group">
             <label>Restaurant / Winstub</label>
-            <input type="text" id="f-resto" placeholder="Nom du restaurant">
+            <input type="text" id="f-resto" placeholder="Nom du restaurant" list="resto-suggestions" autocomplete="off">
+            <datalist id="resto-suggestions"></datalist>
           </div>
           <div class="form-group">
             <label>Ville</label>
@@ -1389,11 +1390,19 @@ function switchModalTab(name, btn) {
   btn.classList.add('active');
 }
 
+function updateRestoSuggestions() {
+  const dl = document.getElementById('resto-suggestions');
+  if (!dl) return;
+  const restos = [...new Set(FLAMBEES.map(f => f.resto).filter(Boolean))].sort();
+  dl.innerHTML = restos.map(r => `<option value="${r}">`).join('');
+}
+
 function openAddModal() {
   editingId = null;
   document.getElementById('modal-title').textContent = 'Nouvelle tarte flambée 🔥';
   document.getElementById('btn-delete').style.display = 'none';
   resetForm();
+  updateRestoSuggestions();
   document.getElementById('modal-overlay').classList.add('open');
   document.getElementById('f-resto').focus();
 }
@@ -1405,6 +1414,7 @@ function openEditModal(id) {
   document.getElementById('modal-title').textContent = 'Modifier · ' + (f.resto || 'Tarte flambée');
   document.getElementById('btn-delete').style.display = '';
   fillForm(f);
+  updateRestoSuggestions();
   document.getElementById('modal-overlay').classList.add('open');
 }
 
