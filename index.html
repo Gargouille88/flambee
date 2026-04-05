@@ -1149,22 +1149,22 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
-/* ==================== DONNÃES ==================== */
+/* ==================== DONN\u00c3\u0089ES ==================== */
 
 const CRITERIA = [
-  { key: 'pate',      label: 'ð« PÃ¢te',       desc: 'Ãpaisseur et cuisson' },
-  { key: 'garniture', label: 'ð§ Garniture',   desc: 'GÃ©nÃ©rositÃ© et Ã©quilibre' },
-  { key: 'creme',     label: 'ð¥ CrÃ¨me',       desc: 'QualitÃ© et rÃ©partition' },
-  { key: 'cuisson',   label: 'ð¥ FlambÃ©e',     desc: 'Cuisson au four' },
-  { key: 'cadre',     label: 'ð  Cadre',       desc: 'Winstub et ambiance' },
+  { key: 'pate',      label: '\u00f0\u009f\u00ab\u0093 P\u00c3\u00a2te',       desc: '\u00c3\u0089paisseur et cuisson' },
+  { key: 'garniture', label: '\u00f0\u009f\u00a7\u0085 Garniture',   desc: 'G\u00c3\u00a9n\u00c3\u00a9rosit\u00c3\u00a9 et \u00c3\u00a9quilibre' },
+  { key: 'creme',     label: '\u00f0\u009f\u00a5\u009b Cr\u00c3\u00a8me',       desc: 'Qualit\u00c3\u00a9 et r\u00c3\u00a9partition' },
+  { key: 'cuisson',   label: '\u00f0\u009f\u0094\u00a5 Flamb\u00c3\u00a9e',     desc: 'Cuisson au four' },
+  { key: 'cadre',     label: '\u00f0\u009f\u008f\u00a0 Cadre',       desc: 'Winstub et ambiance' },
 ];
 
-const MONTHS = ['Jan','FÃ©v','Mar','Avr','Mai','Jun','Jul','AoÃ»','Sep','Oct','Nov','DÃ©c'];
+const MONTHS = ['Jan','F\u00c3\u00a9v','Mar','Avr','Mai','Jun','Jul','Ao\u00c3\u00bb','Sep','Oct','Nov','D\u00c3\u00a9c'];
 
 /* __FLAMBEES_DATA__ */
 let FLAMBEES = [];
 
-/* Charger depuis localStorage au dÃ©marrage */
+/* Charger depuis localStorage au d\u00c3\u00a9marrage */
 (function() {
   const stored = localStorage.getItem('flambees_data');
   if (stored) {
@@ -1176,7 +1176,7 @@ function save() {
   localStorage.setItem('flambees_data', JSON.stringify(FLAMBEES));
 }
 
-/* ==================== ÃTAT ==================== */
+/* ==================== \u00c3\u0089TAT ==================== */
 let editingId = null;
 let showFavOnly = false;
 let showRevisitOnly = false;
@@ -1242,8 +1242,8 @@ function renderCollection() {
   const grid = document.getElementById('flambee-grid');
   if (!list.length) {
     grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
-      <div class="icon">ð¥</div>
-      <h3>Aucune tarte flambÃ©e</h3>
+      <div class="icon">\u00f0\u009f\u0094\u00a5</div>
+      <h3>Aucune tarte flamb\u00c3\u00a9e</h3>
       <p>Cliquez sur "+ Ajouter" pour commencer votre collection</p>
     </div>`;
     return;
@@ -1251,7 +1251,7 @@ function renderCollection() {
 
   grid.innerHTML = list.map(f => cardHTML(f)).join('');
 
-  // Mise Ã  jour filtre villes
+  // Mise \u00c3\u00a0 jour filtre villes
   const villes = [...new Set(FLAMBEES.map(f => f.ville).filter(Boolean))].sort();
   const sel = document.getElementById('filter-ville');
   const cur = sel.value;
@@ -1267,12 +1267,12 @@ function getScore(f) {
 
 function getScoreDisplay(f) {
   const s = getScore(f);
-  return s > 0 ? s.toFixed(1) : 'â';
+  return s > 0 ? s.toFixed(1) : '\u00e2\u0080\u0094';
 }
 
 function starsHTML(n, max = 5) {
   let h = '';
-  for (let i = 1; i <= max; i++) h += `<span class="mini-star">${i <= n ? 'â' : 'â'}</span>`;
+  for (let i = 1; i <= max; i++) h += `<span class="mini-star">${i <= n ? '\u00e2\u0098\u0085' : '\u00e2\u0098\u0086'}</span>`;
   return h;
 }
 
@@ -1281,7 +1281,7 @@ function cardHTML(f) {
   const scoreClass = score >= 4.5 ? 'score-top' : '';
   const imgPart = f.photo
     ? `<div class="card-img"><img src="${f.photo}" alt="${f.name}" loading="lazy"></div>`
-    : `<div class="card-img"><span style="opacity:0.4">ð¥</span></div>`;
+    : `<div class="card-img"><span style="opacity:0.4">\u00f0\u009f\u0094\u00a5</span></div>`;
   const critHTML = CRITERIA.map(c => {
     const v = f.criteria?.[c.key] || 0;
     if (!v) return '';
@@ -1295,13 +1295,13 @@ function cardHTML(f) {
         <div class="card-name">${f.resto || 'Restaurant inconnu'}</div>
         ${score > 0 ? `<div class="card-score ${scoreClass}">${score.toFixed(1)}/5</div>` : ''}
       </div>
-      <div class="card-resto">ð ${f.resto || ''}${f.ville ? ` Â· ${f.ville}` : ''}</div>
+      <div class="card-resto">\u00f0\u009f\u0093\u008d ${f.resto || ''}${f.ville ? ` \u00c2\u00b7 ${f.ville}` : ''}</div>
       <div class="card-meta">
         ${f.date ? `<span>${formatDate(f.date)}</span>` : ''}
-        ${f.prix ? `<span>${Number(f.prix).toFixed(2)} â¬</span>` : ''}
+        ${f.prix ? `<span>${Number(f.prix).toFixed(2)} \u00e2\u0082\u00ac</span>` : ''}
         ${f.type && f.type !== 'autre' ? `<span class="card-tag">${f.type}</span>` : ''}
-        ${f.fav ? '<span class="card-tag fav">â¤ï¸ Coup de cÅur</span>' : ''}
-        ${f.revisit ? '<span class="card-tag trad">ð Revisiter</span>' : ''}
+        ${f.fav ? '<span class="card-tag fav">\u00e2\u009d\u00a4\u00ef\u00b8\u008f Coup de c\u00c5\u0093ur</span>' : ''}
+        ${f.revisit ? '<span class="card-tag trad">\u00f0\u009f\u0094\u0081 Revisiter</span>' : ''}
       </div>
       ${score > 0 ? `<div class="card-stars">${starsHTML(Math.round(score))}</div>` : ''}
       ${critHTML ? `<div class="card-criteria">${critHTML}</div>` : ''}
@@ -1322,9 +1322,9 @@ function updateHeader() {
   const favs = FLAMBEES.filter(f => f.fav).length;
   const villes = new Set(FLAMBEES.map(f => f.ville).filter(Boolean)).size;
   const scores = FLAMBEES.map(f => getScore(f)).filter(s => s > 0);
-  const avg = scores.length ? (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(1) : 'â';
+  const avg = scores.length ? (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(1) : '\u00e2\u0080\u0094';
   document.getElementById('header-stats').innerHTML = `
-    <div class="header-stat"><span class="val">${total}</span><span class="lbl">FlambÃ©es</span></div>
+    <div class="header-stat"><span class="val">${total}</span><span class="lbl">Flamb\u00c3\u00a9es</span></div>
     <div class="header-stat"><span class="val">${villes}</span><span class="lbl">Villes</span></div>
     <div class="header-stat"><span class="val">${avg}</span><span class="lbl">Moy. /5</span></div>
     <div class="header-stat"><span class="val">${favs}</span><span class="lbl">Favoris</span></div>
@@ -1341,13 +1341,13 @@ function buildCriteriaInputs() {
         <span class="crit-score" id="score-label-${c.key}">0</span>
       </label>
       <div class="star-rating" data-crit="${c.key}">
-        ${[1,2,3,4,5].map(v => `<span class="star" data-v="${v}">â</span>`).join('')}
+        ${[1,2,3,4,5].map(v => `<span class="star" data-v="${v}">\u00e2\u0098\u0085</span>`).join('')}
       </div>
       <input type="hidden" id="f-crit-${c.key}" value="0">
     </div>
   `).join('');
 
-  // Stars click pour critÃ¨res
+  // Stars click pour crit\u00c3\u00a8res
   container.querySelectorAll('.star-rating[data-crit]').forEach(sr => {
     const key = sr.dataset.crit;
     sr.querySelectorAll('.star').forEach(star => {
@@ -1391,7 +1391,7 @@ function switchModalTab(name, btn) {
 
 function openAddModal() {
   editingId = null;
-  document.getElementById('modal-title').textContent = 'Nouvelle tarte flambÃ©e ð¥';
+  document.getElementById('modal-title').textContent = 'Nouvelle tarte flamb\u00c3\u00a9e \u00f0\u009f\u0094\u00a5';
   document.getElementById('btn-delete').style.display = 'none';
   resetForm();
   document.getElementById('modal-overlay').classList.add('open');
@@ -1402,7 +1402,7 @@ function openEditModal(id) {
   const f = FLAMBEES.find(x => x.id === id);
   if (!f) return;
   editingId = id;
-  document.getElementById('modal-title').textContent = 'Modifier Â· ' + (f.resto || 'Tarte flambée');
+  document.getElementById('modal-title').textContent = 'Modifier \u00c2\u00b7 ' + (f.resto || 'Tarte flamb\u00e9e');
   document.getElementById('btn-delete').style.display = '';
   fillForm(f);
   document.getElementById('modal-overlay').classList.add('open');
@@ -1481,7 +1481,7 @@ function closeModalIfBg(e) {
 
 function saveFlambee() {
   const name = document.getElementById('f-resto').value.trim();
-  if (!name) { toast('⚠️ Indiquez le nom du restaurant'); return; }
+  if (!name) { toast('\u26a0\ufe0f Indiquez le nom du restaurant'); return; }
 
   const photoURL = document.getElementById('f-photo-url').value.trim();
   const photoPrev = document.getElementById('f-photo-preview');
@@ -1510,10 +1510,10 @@ function saveFlambee() {
   if (editingId) {
     const idx = FLAMBEES.findIndex(x => x.id === editingId);
     if (idx !== -1) FLAMBEES[idx] = f;
-    toast('â Tarte flambÃ©e modifiÃ©e !');
+    toast('\u00e2\u009c\u0085 Tarte flamb\u00c3\u00a9e modifi\u00c3\u00a9e !');
   } else {
     FLAMBEES.unshift(f);
-    toast('ð¥ Tarte flambÃ©e ajoutÃ©e !');
+    toast('\u00f0\u009f\u0094\u00a5 Tarte flamb\u00c3\u00a9e ajout\u00c3\u00a9e !');
   }
 
   save();
@@ -1523,12 +1523,12 @@ function saveFlambee() {
 
 function deleteCurrentFlambee() {
   if (!editingId) return;
-  if (!confirm('Supprimer cette tarte flambÃ©e ?')) return;
+  if (!confirm('Supprimer cette tarte flamb\u00c3\u00a9e ?')) return;
   FLAMBEES = FLAMBEES.filter(f => f.id !== editingId);
   save();
   closeModal();
   renderAll();
-  toast('ð SupprimÃ©e');
+  toast('\u00f0\u009f\u0097\u0091 Supprim\u00c3\u00a9e');
 }
 
 /* ==================== CARTE === */
@@ -1544,14 +1544,14 @@ function renderCarte() {
         ? `https://www.google.com/maps/search/${encodeURIComponent(f.ville + ' restaurant')}`
         : '#';
     return `<div class="map-item" onclick="openMap('${gmUrl}')">
-      <div class="map-item-icon">${f.photo ? `<img src="${f.photo}" style="width:40px;height:40px;border-radius:8px;object-fit:cover">` : 'ð '}</div>
+      <div class="map-item-icon">${f.photo ? `<img src="${f.photo}" style="width:40px;height:40px;border-radius:8px;object-fit:cover">` : '\u00f0\u009f\u008f\u00a0'}</div>
       <div class="map-item-info">
         <div class="map-item-name">${f.name}</div>
-        <div class="map-item-loc">ð ${f.resto || ''}${f.ville ? ` Â· ${f.ville}` : ''}</div>
+        <div class="map-item-loc">\u00f0\u009f\u0093\u008d ${f.resto || ''}${f.ville ? ` \u00c2\u00b7 ${f.ville}` : ''}</div>
       </div>
-      ${score > 0 ? `<div class="map-item-score">â ${score.toFixed(1)}</div>` : ''}
+      ${score > 0 ? `<div class="map-item-score">\u00e2\u0098\u0085 ${score.toFixed(1)}</div>` : ''}
     </div>`;
-  }).join('') || '<p style="color:var(--text3);text-align:center;padding:20px">Aucun restaurant enregistrÃ©</p>';
+  }).join('') || '<p style="color:var(--text3);text-align:center;padding:20px">Aucun restaurant enregistr\u00c3\u00a9</p>';
 }
 
 function openMap(url) {
@@ -1561,7 +1561,7 @@ function openMap(url) {
 /* ==================== STATS ==================== */
 function renderStats() {
   if (!FLAMBEES.length) {
-    document.getElementById('stats-cards').innerHTML = '<p style="color:var(--text3);grid-column:1/-1">Aucune donnÃ©e</p>';
+    document.getElementById('stats-cards').innerHTML = '<p style="color:var(--text3);grid-column:1/-1">Aucune donn\u00c3\u00a9e</p>';
     return;
   }
 
@@ -1576,21 +1576,21 @@ function renderStats() {
   const avgPrix = prix.length ? prix.reduce((a,b)=>a+b,0)/prix.length : 0;
 
   document.getElementById('stats-cards').innerHTML = [
-    { icon:'ð¥', val: FLAMBEES.length, lbl:'FlambÃ©es dÃ©gustÃ©es' },
-    { icon:'â­', val: avg.toFixed(2), lbl:'Note moyenne /5' },
-    { icon:'ð', val: best.toFixed(1), lbl:'Meilleure note' },
-    { icon:'ð', val: villes, lbl:'Villes visitÃ©es' },
-    { icon:'ð ', val: restos, lbl:'Restaurants' },
-    { icon:'â¤ï¸', val: favs, lbl:'Coups de cÅur' },
-    { icon:'ð¶', val: avgPrix ? avgPrix.toFixed(2)+' â¬' : 'â', lbl:'Prix moyen' },
-    { icon:'ð', val: FLAMBEES.filter(f=>f.revisit).length, lbl:'Ã revisiter' },
+    { icon:'\u00f0\u009f\u0094\u00a5', val: FLAMBEES.length, lbl:'Flamb\u00c3\u00a9es d\u00c3\u00a9gust\u00c3\u00a9es' },
+    { icon:'\u00e2\u00ad\u0090', val: avg.toFixed(2), lbl:'Note moyenne /5' },
+    { icon:'\u00f0\u009f\u008f\u0086', val: best.toFixed(1), lbl:'Meilleure note' },
+    { icon:'\u00f0\u009f\u0093\u008d', val: villes, lbl:'Villes visit\u00c3\u00a9es' },
+    { icon:'\u00f0\u009f\u008f\u00a0', val: restos, lbl:'Restaurants' },
+    { icon:'\u00e2\u009d\u00a4\u00ef\u00b8\u008f', val: favs, lbl:'Coups de c\u00c5\u0093ur' },
+    { icon:'\u00f0\u009f\u0092\u00b6', val: avgPrix ? avgPrix.toFixed(2)+' \u00e2\u0082\u00ac' : '\u00e2\u0080\u0094', lbl:'Prix moyen' },
+    { icon:'\u00f0\u009f\u0094\u0081', val: FLAMBEES.filter(f=>f.revisit).length, lbl:'\u00c3\u0080 revisiter' },
   ].map(s => `<div class="stat-card">
     <span class="stat-icon">${s.icon}</span>
     <div class="stat-val">${s.val}</div>
     <div class="stat-lbl">${s.lbl}</div>
   </div>`).join('');
 
-  // Barres critÃ¨res
+  // Barres crit\u00c3\u00a8res
   const critBars = document.getElementById('criteria-bars');
   critBars.innerHTML = CRITERIA.map(c => {
     const vals = FLAMBEES.map(f => Number(f.criteria?.[c.key] || 0)).filter(v => v > 0);
@@ -1599,7 +1599,7 @@ function renderStats() {
     return `<div class="crit-bar-item">
       <div class="crit-bar-label">${c.label}</div>
       <div class="crit-bar-track"><div class="crit-bar-fill" style="width:${pct}%"></div></div>
-      <div class="crit-bar-val">${avg ? avg.toFixed(1) : 'â'}</div>
+      <div class="crit-bar-val">${avg ? avg.toFixed(1) : '\u00e2\u0080\u0094'}</div>
     </div>`;
   }).join('');
 
@@ -1622,7 +1622,7 @@ function renderStats() {
   renderChart('score-chart', {
     type: 'bar',
     data: {
-      labels: ['1 â','2 â','3 â','4 â','5 â'],
+      labels: ['1 \u00e2\u0098\u0085','2 \u00e2\u0098\u0085','3 \u00e2\u0098\u0085','4 \u00e2\u0098\u0085','5 \u00e2\u0098\u0085'],
       datasets: [{ data: buckets, backgroundColor: ['#e87b0d44','#e87b0d66','#e87b0d88','#c84b0aaa','#c84b0a'], borderRadius: 6 }]
     },
     options: { plugins:{ legend:{display:false} }, scales:{ y:{beginAtZero:true, ticks:{stepSize:1} } } }
@@ -1697,11 +1697,11 @@ function renderTop() {
     .sort((a,b) => getScore(b) - getScore(a));
 
   if (!sorted.length) {
-    list.innerHTML = '<div class="empty-state"><div class="icon">ð</div><h3>Aucune note saisie</h3></div>';
+    list.innerHTML = '<div class="empty-state"><div class="icon">\u00f0\u009f\u008f\u0086</div><h3>Aucune note saisie</h3></div>';
     return;
   }
 
-  const medals = ['ð¥','ð¥','ð¥'];
+  const medals = ['\u00f0\u009f\u00a5\u0087','\u00f0\u009f\u00a5\u0088','\u00f0\u009f\u00a5\u0089'];
   list.innerHTML = sorted.map((f, i) => {
     const score = getScore(f);
     const rankCls = i === 0 ? 'r1' : i === 1 ? 'r2' : i === 2 ? 'r3' : '';
@@ -1709,9 +1709,9 @@ function renderTop() {
       ${i < 3 ? `<div class="top-medal">${medals[i]}</div>` : `<div class="top-rank ${rankCls}">${i+1}</div>`}
       <div class="top-info">
         <div class="top-name">${f.resto || f.name || 'Restaurant inconnu'}</div>
-        <div class="top-sub">ð ${f.resto || 'Restaurant inconnu'}${f.ville ? ` Â· ${f.ville}` : ''}${f.date ? ` Â· ${formatDate(f.date)}` : ''}</div>
+        <div class="top-sub">\u00f0\u009f\u0093\u008d ${f.resto || 'Restaurant inconnu'}${f.ville ? ` \u00c2\u00b7 ${f.ville}` : ''}${f.date ? ` \u00c2\u00b7 ${formatDate(f.date)}` : ''}</div>
       </div>
-      <div class="top-score">â ${score.toFixed(1)}</div>
+      <div class="top-score">\u00e2\u0098\u0085 ${score.toFixed(1)}</div>
     </div>`;
   }).join('');
 }
@@ -1730,7 +1730,7 @@ function exportCSV() {
   a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
   a.download = `flambees_${new Date().toISOString().split('T')[0]}.csv`;
   a.click();
-  toast('ð¤ Export CSV tÃ©lÃ©chargÃ©');
+  toast('\u00f0\u009f\u0093\u00a4 Export CSV t\u00c3\u00a9l\u00c3\u00a9charg\u00c3\u00a9');
 }
 
 function importCSV(e) {
@@ -1752,7 +1752,7 @@ function importCSV(e) {
     FLAMBEES = imported;
     save();
     renderAll();
-    toast(`ð¥ ${imported.length} entrÃ©es importÃ©es`);
+    toast(`\u00f0\u009f\u0093\u00a5 ${imported.length} entr\u00c3\u00a9es import\u00c3\u00a9es`);
   };
   reader.readAsText(file);
   e.target.value = '';
@@ -1762,7 +1762,7 @@ function clearAll() {
   FLAMBEES = [];
   save();
   renderAll();
-  toast('ð DonnÃ©es effacÃ©es');
+  toast('\u00f0\u009f\u0097\u0091 Donn\u00c3\u00a9es effac\u00c3\u00a9es');
 }
 
 /* ==================== DROPDOWN ==================== */
