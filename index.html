@@ -1404,20 +1404,34 @@ function onRestoInput(val) {
 }
 
 async function searchNominatim(q, localResults) {
-  const dd = document.getElementById('resto-dropdown');
   try {
-    const url = 'https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(q) + '&countrycodes=fr&bounded=1&viewbox=6.8,47.1,8.2,48.5&format=json&limit=8&addressdetails=1&namedetails=1';
-    const resp = await fetch(url, { headers: { 'Accept-Language': 'fr' } });
-    const results = await resp.json();
-    const amenities = ['restaurant','bar','cafe','fast_food','pub','biergarten','winstub'];
-    const remote = results
-      .filter(r => amenities.includes(r.type) || r.class === 'amenity')
-      .map(r => ({
-        name: r.namedetails?.name || r.display_name.split(',')[0],
-        address: [r.address?.road, r.address?.house_number].filter(Boolean).join(' '),
-        city: r.address?.city || r.address?.town || r.address?.village || '',
-        local: false
-      }));
+    // Photon (Komoot) : autocompletion OSM rapide, centree sur l'Alsace
+    const url = 'https://photon.komoot.io/api/?q=' + encodeURIComponent(q)
+      + '&lat=48.5&lon=7.7&zoom=10&limit=10&lang=fr';
+    const resp = await fetch(url);
+    const data = await resp.json();
+    const foodTypes = ['restaurant','bar','cafe','fast_food','pub','biergarten','food_court','winstub','brasserie','tavern','ice_cream'];
+    const seen = new Set();
+    const remote = (data.features || [])
+      .filter(f => {
+        const p = f.properties;
+        // Garder uniquement les etablissements de restauration
+        if (!foodTypes.includes(p.osm_value)) return false;
+        // Deduplication par nom
+        if (seen.has(p.name)) return false;
+        seen.add(p.name);
+        return true;
+      })
+      .slice(0, 8)
+      .map(f => {
+        const p = f.properties;
+        return {
+          name: p.name,
+          address: [p.housenumber, p.street].filter(Boolean).join(' '),
+          city: p.city || p.town || p.village || p.municipality || '',
+          local: false
+        };
+      });
     renderRestoDropdown([...localResults.map(r => ({ name: r, local: true })), ...remote]);
   } catch(e) {
     renderRestoDropdown(localResults.map(r => ({ name: r, local: true })));
