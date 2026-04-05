@@ -1051,10 +1051,6 @@
 
       <!-- INFOS -->
       <div class="modal-section active" id="msec-infos">
-        <div class="form-group">
-          <label>Nom / Type de flambÃ©e</label>
-          <input type="text" id="f-name" placeholder="ex: Traditionnelle, ForestiÃ¨re, GratinÃ©eâ¦">
-        </div>
         <div class="form-row">
           <div class="form-group">
             <label>Restaurant / Winstub</label>
@@ -1296,7 +1292,7 @@ function cardHTML(f) {
     ${imgPart}
     <div class="card-body">
       <div class="card-top">
-        <div class="card-name">${f.name || 'Tarte flambÃ©e'}</div>
+        <div class="card-name">${f.resto || 'Restaurant inconnu'}</div>
         ${score > 0 ? `<div class="card-score ${scoreClass}">${score.toFixed(1)}/5</div>` : ''}
       </div>
       <div class="card-resto">ð ${f.resto || ''}${f.ville ? ` Â· ${f.ville}` : ''}</div>
@@ -1399,7 +1395,7 @@ function openAddModal() {
   document.getElementById('btn-delete').style.display = 'none';
   resetForm();
   document.getElementById('modal-overlay').classList.add('open');
-  document.getElementById('f-name').focus();
+  document.getElementById('f-resto').focus();
 }
 
 function openEditModal(id) {
@@ -1413,7 +1409,7 @@ function openEditModal(id) {
 }
 
 function resetForm() {
-  ['name','resto','ville','adresse','notes','photo-url'].forEach(k => {
+  ['resto','ville','adresse','notes','photo-url'].forEach(k => {
     const el = document.getElementById('f-' + k);
     if (el) el.value = '';
   });
@@ -1440,8 +1436,7 @@ function resetForm() {
 }
 
 function fillForm(f) {
-  document.getElementById('f-name').value = f.name || '';
-  document.getElementById('f-resto').value = f.resto || '';
+  document.getElementById('f-resto').value = f.resto || f.name || '';
   document.getElementById('f-ville').value = f.ville || '';
   document.getElementById('f-adresse').value = f.adresse || '';
   document.getElementById('f-date').value = f.date || '';
@@ -1485,7 +1480,7 @@ function closeModalIfBg(e) {
 }
 
 function saveFlambee() {
-  const name = document.getElementById('f-name').value.trim();
+  const name = document.getElementById('f-resto').value.trim();
   if (!name) { toast('â ï¸ Donnez un nom Ã  cette flambÃ©e'); return; }
 
   const photoURL = document.getElementById('f-photo-url').value.trim();
