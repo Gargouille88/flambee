@@ -214,6 +214,89 @@
     gap: 16px;
   }
 
+  /* === TOGGLE VUE === */
+  .view-toggle {
+    display: flex;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+  .view-toggle-btn {
+    background: none;
+    border: none;
+    padding: 7px 11px;
+    cursor: pointer;
+    font-size: 15px;
+    color: var(--text3);
+    transition: all 0.15s;
+    line-height: 1;
+  }
+  .view-toggle-btn.active {
+    background: var(--accent);
+    color: #fff;
+  }
+  .view-toggle-btn:hover:not(.active) { color: var(--accent); }
+
+  /* === TABLEAU === */
+  .flambee-table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+  .flambee-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    min-width: 700px;
+  }
+  .flambee-table th {
+    background: var(--bg2);
+    color: var(--text2);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+  }
+  .flambee-table th:hover { color: var(--accent); }
+  .flambee-table th.sort-asc::after { content: " ↑"; color: var(--accent); }
+  .flambee-table th.sort-desc::after { content: " ↓"; color: var(--accent); }
+  .flambee-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    vertical-align: middle;
+  }
+  .flambee-table tr:last-child td { border-bottom: none; }
+  .flambee-table tr:hover td { background: var(--bg); cursor: pointer; }
+  .flambee-table .td-score {
+    font-weight: 700;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+  .flambee-table .td-resto { font-weight: 600; }
+  .flambee-table .td-crit {
+    font-size: 12px;
+    color: var(--text3);
+    white-space: nowrap;
+  }
+  .flambee-table .td-flags { white-space: nowrap; }
+  .flambee-table .td-notes {
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--text2);
+    font-style: italic;
+    font-size: 12px;
+  }
+
   /* === CARD === */
   .flambee-card {
     background: var(--card);
@@ -1039,6 +1122,10 @@
       </select>
       <button class="sort-btn" id="btn-fav" onclick="toggleFavFilter()" title="Coups de cœur">❤️</button>
       <button class="sort-btn" id="btn-revisit" onclick="toggleRevisitFilter()" title="À revisiter">🔁</button>
+      <div class="view-toggle">
+        <button class="view-toggle-btn active" id="btn-view-cards" onclick="setView('cards')" title="Vue cartes">⊞</button>
+        <button class="view-toggle-btn" id="btn-view-table" onclick="setView('table')" title="Vue tableau">☰</button>
+      </div>
       <div style="position:relative;margin-left:auto">
         <button class="menu-btn" onclick="toggleDropdown()">···</button>
         <div class="dropdown" id="dropdown">
@@ -1285,6 +1372,15 @@ function toggleRevisitFilter() {
 }
 
 /* ==================== COLLECTION ==================== */
+let viewMode = 'cards';
+
+function setView(mode) {
+  viewMode = mode;
+  document.getElementById('btn-view-cards').classList.toggle('active', mode === 'cards');
+  document.getElementById('btn-view-table').classList.toggle('active', mode === 'table');
+  renderCollection();
+}
+
 function renderCollection() {
   const q = document.getElementById('search').value.toLowerCase();
   const ville = document.getElementById('filter-ville').value;
@@ -1313,7 +1409,9 @@ function renderCollection() {
   });
 
   const grid = document.getElementById('flambee-grid');
+
   if (!list.length) {
+    grid.className = 'flambee-grid';
     grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
       <div class="icon">🔥</div>
       <h3>Aucune tarte flambée</h3>
@@ -1322,7 +1420,13 @@ function renderCollection() {
     return;
   }
 
-  grid.innerHTML = list.map(f => cardHTML(f)).join('');
+  if (viewMode === 'table') {
+    grid.className = '';
+    grid.innerHTML = tableHTML(list);
+  } else {
+    grid.className = 'flambee-grid';
+    grid.innerHTML = list.map(f => cardHTML(f)).join('');
+  }
 
   // Mise à jour filtre villes
   const villes = [...new Set(FLAMBEES.map(f => f.ville).filter(Boolean))].sort();
@@ -1330,6 +1434,55 @@ function renderCollection() {
   const cur = sel.value;
   sel.innerHTML = '<option value="">Toutes villes</option>' +
     villes.map(v => `<option value="${v}" ${v === cur ? 'selected' : ''}>${v}</option>`).join('');
+}
+
+function tableHTML(list) {
+  const rows = list.map(f => {
+    const score = getScore(f);
+    const scoreStr = score > 0 ? score.toFixed(1) : '—';
+    const flames = score > 0 ? starsHTML(score) : '';
+    const critCols = CRITERIA.map(c => {
+      const v = f.criteria?.[c.key] || 0;
+      return `<td class="td-crit">${v ? v + ' 🔥' : '—'}</td>`;
+    }).join('');
+    const flags = (f.fav ? '❤️ ' : '') + (f.revisit ? '🔁' : '');
+    return `<tr onclick="openEditModal('${f.id}')">
+      <td class="td-resto">${f.resto || '—'}</td>
+      <td>${f.ville || '—'}</td>
+      <td>${f.date ? formatDate(f.date) : '—'}</td>
+      <td class="td-score">${score > 0 ? scoreStr + ' 🔥' : '—'}</td>
+      <td>${flames}</td>
+      ${critCols}
+      <td>${f.prix ? Number(f.prix).toFixed(2) + ' €' : '—'}</td>
+      <td>${f.type && f.type !== 'autre' ? f.type : '—'}</td>
+      <td class="td-flags">${flags || '—'}</td>
+      <td class="td-notes">${f.notes || '—'}</td>
+    </tr>`;
+  }).join('');
+
+  const critHeaders = CRITERIA.map(c =>
+    `<th>${c.label.split(' ')[0]} ${c.label.split(' ')[1] || ''}</th>`
+  ).join('');
+
+  return `<div class="flambee-table-wrap">
+    <table class="flambee-table">
+      <thead>
+        <tr>
+          <th>Restaurant</th>
+          <th>Ville</th>
+          <th>Date</th>
+          <th>Note</th>
+          <th>Flammes</th>
+          ${critHeaders}
+          <th>Prix</th>
+          <th>Type</th>
+          <th>Flags</th>
+          <th>Notes libres</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+  </div>`;
 }
 
 function getScore(f) {
