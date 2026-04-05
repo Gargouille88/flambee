@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Flambée 🔥 — Mes Tartes Flambées</title>
+<title>FlambÃ©e ð¥ â Mes Tartes FlambÃ©es</title>
 <style>
   /* === RESET & BASE === */
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -839,7 +839,7 @@
   /* === CHART === */
   canvas { display: block; width: 100% !important; }
 
-  /* === MENU ··· === */
+  /* === MENU Â·Â·Â· === */
   .menu-btn {
     background: var(--card);
     border: 1px solid var(--border);
@@ -924,9 +924,9 @@
 <header>
   <div class="header-inner">
     <div class="header-title">
-      <span class="flame">🔥</span>
+      <span class="flame">ð¥</span>
       <div>
-        <h1>Flambée</h1>
+        <h1>FlambÃ©e</h1>
       </div>
     </div>
     <div class="header-stats" id="header-stats"></div>
@@ -937,10 +937,10 @@
 <!-- TABS -->
 <div class="tabs-bar">
   <div class="tabs-inner">
-    <button class="tab-btn active" onclick="switchTab('collection', this)">🍕 Collection</button>
-    <button class="tab-btn" onclick="switchTab('carte', this)">📍 Carte</button>
-    <button class="tab-btn" onclick="switchTab('stats', this)">📊 Statistiques</button>
-    <button class="tab-btn" onclick="switchTab('top', this)">🏆 Top Flambées</button>
+    <button class="tab-btn active" onclick="switchTab('collection', this)">ð Collection</button>
+    <button class="tab-btn" onclick="switchTab('carte', this)">ð Carte</button>
+    <button class="tab-btn" onclick="switchTab('stats', this)">ð Statistiques</button>
+    <button class="tab-btn" onclick="switchTab('top', this)">ð Top FlambÃ©es</button>
   </div>
 </div>
 
@@ -950,25 +950,25 @@
   <!-- === COLLECTION === -->
   <div id="tab-collection" class="tab-content active">
     <div class="toolbar">
-      <input type="text" id="search" placeholder="🔍 Rechercher…" oninput="renderCollection()">
+      <input type="text" id="search" placeholder="ð Rechercherâ¦" oninput="renderCollection()">
       <select id="filter-ville" onchange="renderCollection()">
         <option value="">Toutes villes</option>
       </select>
       <select id="filter-sort" onchange="renderCollection()">
-        <option value="date-desc">Plus récentes</option>
+        <option value="date-desc">Plus rÃ©centes</option>
         <option value="date-asc">Plus anciennes</option>
         <option value="score-desc">Meilleures notes</option>
         <option value="score-asc">Notes croissantes</option>
-        <option value="name-asc">Nom A→Z</option>
+        <option value="name-asc">Nom AâZ</option>
       </select>
-      <button class="sort-btn" id="btn-fav" onclick="toggleFavFilter()" title="Coups de cœur">❤️</button>
-      <button class="sort-btn" id="btn-revisit" onclick="toggleRevisitFilter()" title="À revisiter">🔁</button>
+      <button class="sort-btn" id="btn-fav" onclick="toggleFavFilter()" title="Coups de cÅur">â¤ï¸</button>
+      <button class="sort-btn" id="btn-revisit" onclick="toggleRevisitFilter()" title="Ã revisiter">ð</button>
       <div style="position:relative;margin-left:auto">
-        <button class="menu-btn" onclick="toggleDropdown()">···</button>
+        <button class="menu-btn" onclick="toggleDropdown()">Â·Â·Â·</button>
         <div class="dropdown" id="dropdown">
-          <button class="dropdown-item" onclick="exportCSV();closeDropdown()">📤 Exporter CSV</button>
-          <button class="dropdown-item" onclick="document.getElementById('import-file').click();closeDropdown()">📥 Importer CSV</button>
-          <button class="dropdown-item danger" onclick="if(confirm('Effacer toutes les données ?'))clearAll();closeDropdown()">🗑 Effacer tout</button>
+          <button class="dropdown-item" onclick="exportCSV();closeDropdown()">ð¤ Exporter CSV</button>
+          <button class="dropdown-item" onclick="document.getElementById('import-file').click();closeDropdown()">ð¥ Importer CSV</button>
+          <button class="dropdown-item danger" onclick="if(confirm('Effacer toutes les donnÃ©es ?'))clearAll();closeDropdown()">ð Effacer tout</button>
         </div>
         <input type="file" id="import-file" accept=".csv" style="display:none" onchange="importCSV(event)">
       </div>
@@ -980,7 +980,7 @@
   <div id="tab-carte" class="tab-content">
     <div id="map-container">
       <div class="map-placeholder">
-        <span class="icon">🗺️</span>
+        <span class="icon">ðºï¸</span>
         <p style="font-size:14px;color:var(--text2);margin-bottom:8px">Localisez vos restaurants</p>
         <p style="font-size:13px">Les adresses s'ouvrent dans Google Maps</p>
       </div>
@@ -993,21 +993,21 @@
     <div class="stats-grid" id="stats-cards"></div>
 
     <div class="stats-section">
-      <h3>🎯 Notes moyennes par critère</h3>
+      <h3>ð¯ Notes moyennes par critÃ¨re</h3>
       <div id="criteria-bars"></div>
     </div>
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
 
       <div class="stats-section">
-        <h3>🏙 Villes visitées</h3>
+        <h3>ð Villes visitÃ©es</h3>
         <div id="city-chart-container" style="height:200px">
           <canvas id="city-chart"></canvas>
         </div>
       </div>
 
       <div class="stats-section">
-        <h3>⭐ Distribution des notes</h3>
+        <h3>â­ Distribution des notes</h3>
         <div id="score-chart-container" style="height:200px">
           <canvas id="score-chart"></canvas>
         </div>
@@ -1016,12 +1016,12 @@
     </div>
 
     <div class="stats-section">
-      <h3>📅 Fréquence de dégustation</h3>
+      <h3>ð FrÃ©quence de dÃ©gustation</h3>
       <div class="heatmap-months" id="heatmap"></div>
     </div>
 
     <div class="stats-section">
-      <h3>📈 Évolution de la note dans le temps</h3>
+      <h3>ð Ãvolution de la note dans le temps</h3>
       <div style="height:220px">
         <canvas id="timeline-chart"></canvas>
       </div>
@@ -1039,8 +1039,8 @@
 <div class="modal-overlay" id="modal-overlay" onclick="closeModalIfBg(event)">
   <div class="modal" id="modal">
     <div class="modal-header">
-      <h2 id="modal-title">Nouvelle tarte flambée</h2>
-      <button class="modal-close" onclick="closeModal()">✕</button>
+      <h2 id="modal-title">Nouvelle tarte flambÃ©e</h2>
+      <button class="modal-close" onclick="closeModal()">â</button>
     </div>
     <div class="modal-body">
       <div class="modal-tabs">
@@ -1052,8 +1052,8 @@
       <!-- INFOS -->
       <div class="modal-section active" id="msec-infos">
         <div class="form-group">
-          <label>Nom / Type de flambée</label>
-          <input type="text" id="f-name" placeholder="ex: Traditionnelle, Forestière, Gratinée…">
+          <label>Nom / Type de flambÃ©e</label>
+          <input type="text" id="f-name" placeholder="ex: Traditionnelle, ForestiÃ¨re, GratinÃ©eâ¦">
         </div>
         <div class="form-row">
           <div class="form-group">
@@ -1062,13 +1062,13 @@
           </div>
           <div class="form-group">
             <label>Ville</label>
-            <input type="text" id="f-ville" placeholder="Strasbourg, Obernai…">
+            <input type="text" id="f-ville" placeholder="Strasbourg, Obernaiâ¦">
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
             <label>Adresse</label>
-            <input type="text" id="f-adresse" placeholder="Rue, numéro">
+            <input type="text" id="f-adresse" placeholder="Rue, numÃ©ro">
           </div>
           <div class="form-group">
             <label>Date de visite</label>
@@ -1077,32 +1077,32 @@
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label>Prix (€)</label>
+            <label>Prix (â¬)</label>
             <input type="number" id="f-prix" placeholder="12.50" step="0.5" min="0">
           </div>
           <div class="form-group">
             <label>Type</label>
             <select id="f-type">
               <option value="traditionnelle">Traditionnelle</option>
-              <option value="gratinee">Gratinée</option>
-              <option value="forestiere">Forestière</option>
+              <option value="gratinee">GratinÃ©e</option>
+              <option value="forestiere">ForestiÃ¨re</option>
               <option value="munster">Munster</option>
               <option value="lardons-oignons">Lardons-oignons</option>
-              <option value="sucrée">Sucrée</option>
+              <option value="sucrÃ©e">SucrÃ©e</option>
               <option value="autre">Autre</option>
             </select>
           </div>
         </div>
         <div class="form-group">
           <label>Notes libres</label>
-          <textarea id="f-notes" placeholder="Impressions, anecdotes, recommandations…"></textarea>
+          <textarea id="f-notes" placeholder="Impressions, anecdotes, recommandationsâ¦"></textarea>
         </div>
         <div class="toggle-row">
-          <label>❤️ Coup de cœur</label>
+          <label>â¤ï¸ Coup de cÅur</label>
           <label class="toggle"><input type="checkbox" id="f-fav"><span class="toggle-slider"></span></label>
         </div>
         <div class="toggle-row">
-          <label>🔁 À revisiter</label>
+          <label>ð Ã revisiter</label>
           <label class="toggle"><input type="checkbox" id="f-revisit"><span class="toggle-slider"></span></label>
         </div>
       </div>
@@ -1112,17 +1112,17 @@
         <div style="margin-bottom:20px">
           <label style="display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px">Note globale</label>
           <div class="star-rating" id="rating-global">
-            <span class="star" data-v="1">★</span>
-            <span class="star" data-v="2">★</span>
-            <span class="star" data-v="3">★</span>
-            <span class="star" data-v="4">★</span>
-            <span class="star" data-v="5">★</span>
+            <span class="star" data-v="1">â</span>
+            <span class="star" data-v="2">â</span>
+            <span class="star" data-v="3">â</span>
+            <span class="star" data-v="4">â</span>
+            <span class="star" data-v="5">â</span>
           </div>
           <input type="hidden" id="f-score" value="0">
         </div>
 
         <div class="criteria-grid" id="criteria-inputs">
-          <!-- Généré dynamiquement -->
+          <!-- GÃ©nÃ©rÃ© dynamiquement -->
         </div>
       </div>
 
@@ -1130,21 +1130,21 @@
       <div class="modal-section" id="msec-photo">
         <div class="form-group">
           <label>Photo (URL ou upload)</label>
-          <input type="text" id="f-photo-url" placeholder="https://… ou collez une URL">
+          <input type="text" id="f-photo-url" placeholder="https://â¦ ou collez une URL">
         </div>
         <div class="photo-drop" id="photo-drop" onclick="document.getElementById('f-photo-file').click()">
-          <span class="ph-icon">📷</span>
+          <span class="ph-icon">ð·</span>
           Cliquez pour choisir une photo<br>
-          <span style="font-size:11px;opacity:0.7">(JPEG, PNG — stockée en base64)</span>
+          <span style="font-size:11px;opacity:0.7">(JPEG, PNG â stockÃ©e en base64)</span>
           <input type="file" id="f-photo-file" accept="image/*" style="display:none" onchange="handlePhotoUpload(event)">
         </div>
-        <img id="f-photo-preview" class="photo-preview" alt="Aperçu">
+        <img id="f-photo-preview" class="photo-preview" alt="AperÃ§u">
       </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-danger" id="btn-delete" onclick="deleteCurrentFlambee()" style="display:none;margin-right:auto">Supprimer</button>
       <button class="btn btn-secondary" onclick="closeModal()">Annuler</button>
-      <button class="btn btn-primary" onclick="saveFlambee()">Enregistrer 🔥</button>
+      <button class="btn btn-primary" onclick="saveFlambee()">Enregistrer ð¥</button>
     </div>
   </div>
 </div>
@@ -1153,22 +1153,22 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
-/* ==================== DONNÉES ==================== */
+/* ==================== DONNÃES ==================== */
 
 const CRITERIA = [
-  { key: 'pate',      label: '🫓 Pâte',       desc: 'Épaisseur et cuisson' },
-  { key: 'garniture', label: '🧅 Garniture',   desc: 'Générosité et équilibre' },
-  { key: 'creme',     label: '🥛 Crème',       desc: 'Qualité et répartition' },
-  { key: 'cuisson',   label: '🔥 Flambée',     desc: 'Cuisson au four' },
-  { key: 'cadre',     label: '🏠 Cadre',       desc: 'Winstub et ambiance' },
+  { key: 'pate',      label: 'ð« PÃ¢te',       desc: 'Ãpaisseur et cuisson' },
+  { key: 'garniture', label: 'ð§ Garniture',   desc: 'GÃ©nÃ©rositÃ© et Ã©quilibre' },
+  { key: 'creme',     label: 'ð¥ CrÃ¨me',       desc: 'QualitÃ© et rÃ©partition' },
+  { key: 'cuisson',   label: 'ð¥ FlambÃ©e',     desc: 'Cuisson au four' },
+  { key: 'cadre',     label: 'ð  Cadre',       desc: 'Winstub et ambiance' },
 ];
 
-const MONTHS = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+const MONTHS = ['Jan','FÃ©v','Mar','Avr','Mai','Jun','Jul','AoÃ»','Sep','Oct','Nov','DÃ©c'];
 
 /* __FLAMBEES_DATA__ */
 let FLAMBEES = [];
 
-/* Charger depuis localStorage au démarrage */
+/* Charger depuis localStorage au dÃ©marrage */
 (function() {
   const stored = localStorage.getItem('flambees_data');
   if (stored) {
@@ -1180,7 +1180,7 @@ function save() {
   localStorage.setItem('flambees_data', JSON.stringify(FLAMBEES));
 }
 
-/* ==================== ÉTAT ==================== */
+/* ==================== ÃTAT ==================== */
 let editingId = null;
 let showFavOnly = false;
 let showRevisitOnly = false;
@@ -1246,8 +1246,8 @@ function renderCollection() {
   const grid = document.getElementById('flambee-grid');
   if (!list.length) {
     grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
-      <div class="icon">🔥</div>
-      <h3>Aucune tarte flambée</h3>
+      <div class="icon">ð¥</div>
+      <h3>Aucune tarte flambÃ©e</h3>
       <p>Cliquez sur "+ Ajouter" pour commencer votre collection</p>
     </div>`;
     return;
@@ -1255,7 +1255,7 @@ function renderCollection() {
 
   grid.innerHTML = list.map(f => cardHTML(f)).join('');
 
-  // Mise à jour filtre villes
+  // Mise Ã  jour filtre villes
   const villes = [...new Set(FLAMBEES.map(f => f.ville).filter(Boolean))].sort();
   const sel = document.getElementById('filter-ville');
   const cur = sel.value;
@@ -1271,12 +1271,12 @@ function getScore(f) {
 
 function getScoreDisplay(f) {
   const s = getScore(f);
-  return s > 0 ? s.toFixed(1) : '—';
+  return s > 0 ? s.toFixed(1) : 'â';
 }
 
 function starsHTML(n, max = 5) {
   let h = '';
-  for (let i = 1; i <= max; i++) h += `<span class="mini-star">${i <= n ? '★' : '☆'}</span>`;
+  for (let i = 1; i <= max; i++) h += `<span class="mini-star">${i <= n ? 'â' : 'â'}</span>`;
   return h;
 }
 
@@ -1285,7 +1285,7 @@ function cardHTML(f) {
   const scoreClass = score >= 4.5 ? 'score-top' : '';
   const imgPart = f.photo
     ? `<div class="card-img"><img src="${f.photo}" alt="${f.name}" loading="lazy"></div>`
-    : `<div class="card-img"><span style="opacity:0.4">🔥</span></div>`;
+    : `<div class="card-img"><span style="opacity:0.4">ð¥</span></div>`;
   const critHTML = CRITERIA.map(c => {
     const v = f.criteria?.[c.key] || 0;
     if (!v) return '';
@@ -1296,16 +1296,16 @@ function cardHTML(f) {
     ${imgPart}
     <div class="card-body">
       <div class="card-top">
-        <div class="card-name">${f.name || 'Tarte flambée'}</div>
+        <div class="card-name">${f.name || 'Tarte flambÃ©e'}</div>
         ${score > 0 ? `<div class="card-score ${scoreClass}">${score.toFixed(1)}/5</div>` : ''}
       </div>
-      <div class="card-resto">📍 ${f.resto || ''}${f.ville ? ` · ${f.ville}` : ''}</div>
+      <div class="card-resto">ð ${f.resto || ''}${f.ville ? ` Â· ${f.ville}` : ''}</div>
       <div class="card-meta">
         ${f.date ? `<span>${formatDate(f.date)}</span>` : ''}
-        ${f.prix ? `<span>${Number(f.prix).toFixed(2)} €</span>` : ''}
+        ${f.prix ? `<span>${Number(f.prix).toFixed(2)} â¬</span>` : ''}
         ${f.type && f.type !== 'autre' ? `<span class="card-tag">${f.type}</span>` : ''}
-        ${f.fav ? '<span class="card-tag fav">❤️ Coup de cœur</span>' : ''}
-        ${f.revisit ? '<span class="card-tag trad">🔁 Revisiter</span>' : ''}
+        ${f.fav ? '<span class="card-tag fav">â¤ï¸ Coup de cÅur</span>' : ''}
+        ${f.revisit ? '<span class="card-tag trad">ð Revisiter</span>' : ''}
       </div>
       ${score > 0 ? `<div class="card-stars">${starsHTML(Math.round(score))}</div>` : ''}
       ${critHTML ? `<div class="card-criteria">${critHTML}</div>` : ''}
@@ -1326,9 +1326,9 @@ function updateHeader() {
   const favs = FLAMBEES.filter(f => f.fav).length;
   const villes = new Set(FLAMBEES.map(f => f.ville).filter(Boolean)).size;
   const scores = FLAMBEES.map(f => getScore(f)).filter(s => s > 0);
-  const avg = scores.length ? (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(1) : '—';
+  const avg = scores.length ? (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(1) : 'â';
   document.getElementById('header-stats').innerHTML = `
-    <div class="header-stat"><span class="val">${total}</span><span class="lbl">Flambées</span></div>
+    <div class="header-stat"><span class="val">${total}</span><span class="lbl">FlambÃ©es</span></div>
     <div class="header-stat"><span class="val">${villes}</span><span class="lbl">Villes</span></div>
     <div class="header-stat"><span class="val">${avg}</span><span class="lbl">Moy. /5</span></div>
     <div class="header-stat"><span class="val">${favs}</span><span class="lbl">Favoris</span></div>
@@ -1345,13 +1345,13 @@ function buildCriteriaInputs() {
         <span class="crit-score" id="score-label-${c.key}">0</span>
       </label>
       <div class="star-rating" data-crit="${c.key}">
-        ${[1,2,3,4,5].map(v => `<span class="star" data-v="${v}">★</span>`).join('')}
+        ${[1,2,3,4,5].map(v => `<span class="star" data-v="${v}">â</span>`).join('')}
       </div>
       <input type="hidden" id="f-crit-${c.key}" value="0">
     </div>
   `).join('');
 
-  // Stars click pour critères
+  // Stars click pour critÃ¨res
   container.querySelectorAll('.star-rating[data-crit]').forEach(sr => {
     const key = sr.dataset.crit;
     sr.querySelectorAll('.star').forEach(star => {
@@ -1395,7 +1395,7 @@ function switchModalTab(name, btn) {
 
 function openAddModal() {
   editingId = null;
-  document.getElementById('modal-title').textContent = 'Nouvelle tarte flambée 🔥';
+  document.getElementById('modal-title').textContent = 'Nouvelle tarte flambÃ©e ð¥';
   document.getElementById('btn-delete').style.display = 'none';
   resetForm();
   document.getElementById('modal-overlay').classList.add('open');
@@ -1406,7 +1406,7 @@ function openEditModal(id) {
   const f = FLAMBEES.find(x => x.id === id);
   if (!f) return;
   editingId = id;
-  document.getElementById('modal-title').textContent = 'Modifier · ' + (f.name || 'Tarte flambée');
+  document.getElementById('modal-title').textContent = 'Modifier Â· ' + (f.name || 'Tarte flambÃ©e');
   document.getElementById('btn-delete').style.display = '';
   fillForm(f);
   document.getElementById('modal-overlay').classList.add('open');
@@ -1486,7 +1486,7 @@ function closeModalIfBg(e) {
 
 function saveFlambee() {
   const name = document.getElementById('f-name').value.trim();
-  if (!name) { toast('⚠️ Donnez un nom à cette flambée'); return; }
+  if (!name) { toast('â ï¸ Donnez un nom Ã  cette flambÃ©e'); return; }
 
   const photoURL = document.getElementById('f-photo-url').value.trim();
   const photoPrev = document.getElementById('f-photo-preview');
@@ -1497,7 +1497,7 @@ function saveFlambee() {
 
   const f = {
     id: editingId || 'f' + Date.now(),
-    name,
+    name: document.getElementById('f-resto').value.trim(),
     resto: document.getElementById('f-resto').value.trim(),
     ville: document.getElementById('f-ville').value.trim(),
     adresse: document.getElementById('f-adresse').value.trim(),
@@ -1515,10 +1515,10 @@ function saveFlambee() {
   if (editingId) {
     const idx = FLAMBEES.findIndex(x => x.id === editingId);
     if (idx !== -1) FLAMBEES[idx] = f;
-    toast('✅ Tarte flambée modifiée !');
+    toast('â Tarte flambÃ©e modifiÃ©e !');
   } else {
     FLAMBEES.unshift(f);
-    toast('🔥 Tarte flambée ajoutée !');
+    toast('ð¥ Tarte flambÃ©e ajoutÃ©e !');
   }
 
   save();
@@ -1528,12 +1528,12 @@ function saveFlambee() {
 
 function deleteCurrentFlambee() {
   if (!editingId) return;
-  if (!confirm('Supprimer cette tarte flambée ?')) return;
+  if (!confirm('Supprimer cette tarte flambÃ©e ?')) return;
   FLAMBEES = FLAMBEES.filter(f => f.id !== editingId);
   save();
   closeModal();
   renderAll();
-  toast('🗑 Supprimée');
+  toast('ð SupprimÃ©e');
 }
 
 /* ==================== CARTE === */
@@ -1549,14 +1549,14 @@ function renderCarte() {
         ? `https://www.google.com/maps/search/${encodeURIComponent(f.ville + ' restaurant')}`
         : '#';
     return `<div class="map-item" onclick="openMap('${gmUrl}')">
-      <div class="map-item-icon">${f.photo ? `<img src="${f.photo}" style="width:40px;height:40px;border-radius:8px;object-fit:cover">` : '🏠'}</div>
+      <div class="map-item-icon">${f.photo ? `<img src="${f.photo}" style="width:40px;height:40px;border-radius:8px;object-fit:cover">` : 'ð '}</div>
       <div class="map-item-info">
         <div class="map-item-name">${f.name}</div>
-        <div class="map-item-loc">📍 ${f.resto || ''}${f.ville ? ` · ${f.ville}` : ''}</div>
+        <div class="map-item-loc">ð ${f.resto || ''}${f.ville ? ` Â· ${f.ville}` : ''}</div>
       </div>
-      ${score > 0 ? `<div class="map-item-score">★ ${score.toFixed(1)}</div>` : ''}
+      ${score > 0 ? `<div class="map-item-score">â ${score.toFixed(1)}</div>` : ''}
     </div>`;
-  }).join('') || '<p style="color:var(--text3);text-align:center;padding:20px">Aucun restaurant enregistré</p>';
+  }).join('') || '<p style="color:var(--text3);text-align:center;padding:20px">Aucun restaurant enregistrÃ©</p>';
 }
 
 function openMap(url) {
@@ -1566,7 +1566,7 @@ function openMap(url) {
 /* ==================== STATS ==================== */
 function renderStats() {
   if (!FLAMBEES.length) {
-    document.getElementById('stats-cards').innerHTML = '<p style="color:var(--text3);grid-column:1/-1">Aucune donnée</p>';
+    document.getElementById('stats-cards').innerHTML = '<p style="color:var(--text3);grid-column:1/-1">Aucune donnÃ©e</p>';
     return;
   }
 
@@ -1581,21 +1581,21 @@ function renderStats() {
   const avgPrix = prix.length ? prix.reduce((a,b)=>a+b,0)/prix.length : 0;
 
   document.getElementById('stats-cards').innerHTML = [
-    { icon:'🔥', val: FLAMBEES.length, lbl:'Flambées dégustées' },
-    { icon:'⭐', val: avg.toFixed(2), lbl:'Note moyenne /5' },
-    { icon:'🏆', val: best.toFixed(1), lbl:'Meilleure note' },
-    { icon:'📍', val: villes, lbl:'Villes visitées' },
-    { icon:'🏠', val: restos, lbl:'Restaurants' },
-    { icon:'❤️', val: favs, lbl:'Coups de cœur' },
-    { icon:'💶', val: avgPrix ? avgPrix.toFixed(2)+' €' : '—', lbl:'Prix moyen' },
-    { icon:'🔁', val: FLAMBEES.filter(f=>f.revisit).length, lbl:'À revisiter' },
+    { icon:'ð¥', val: FLAMBEES.length, lbl:'FlambÃ©es dÃ©gustÃ©es' },
+    { icon:'â­', val: avg.toFixed(2), lbl:'Note moyenne /5' },
+    { icon:'ð', val: best.toFixed(1), lbl:'Meilleure note' },
+    { icon:'ð', val: villes, lbl:'Villes visitÃ©es' },
+    { icon:'ð ', val: restos, lbl:'Restaurants' },
+    { icon:'â¤ï¸', val: favs, lbl:'Coups de cÅur' },
+    { icon:'ð¶', val: avgPrix ? avgPrix.toFixed(2)+' â¬' : 'â', lbl:'Prix moyen' },
+    { icon:'ð', val: FLAMBEES.filter(f=>f.revisit).length, lbl:'Ã revisiter' },
   ].map(s => `<div class="stat-card">
     <span class="stat-icon">${s.icon}</span>
     <div class="stat-val">${s.val}</div>
     <div class="stat-lbl">${s.lbl}</div>
   </div>`).join('');
 
-  // Barres critères
+  // Barres critÃ¨res
   const critBars = document.getElementById('criteria-bars');
   critBars.innerHTML = CRITERIA.map(c => {
     const vals = FLAMBEES.map(f => Number(f.criteria?.[c.key] || 0)).filter(v => v > 0);
@@ -1604,7 +1604,7 @@ function renderStats() {
     return `<div class="crit-bar-item">
       <div class="crit-bar-label">${c.label}</div>
       <div class="crit-bar-track"><div class="crit-bar-fill" style="width:${pct}%"></div></div>
-      <div class="crit-bar-val">${avg ? avg.toFixed(1) : '—'}</div>
+      <div class="crit-bar-val">${avg ? avg.toFixed(1) : 'â'}</div>
     </div>`;
   }).join('');
 
@@ -1627,7 +1627,7 @@ function renderStats() {
   renderChart('score-chart', {
     type: 'bar',
     data: {
-      labels: ['1 ★','2 ★','3 ★','4 ★','5 ★'],
+      labels: ['1 â','2 â','3 â','4 â','5 â'],
       datasets: [{ data: buckets, backgroundColor: ['#e87b0d44','#e87b0d66','#e87b0d88','#c84b0aaa','#c84b0a'], borderRadius: 6 }]
     },
     options: { plugins:{ legend:{display:false} }, scales:{ y:{beginAtZero:true, ticks:{stepSize:1} } } }
@@ -1702,21 +1702,21 @@ function renderTop() {
     .sort((a,b) => getScore(b) - getScore(a));
 
   if (!sorted.length) {
-    list.innerHTML = '<div class="empty-state"><div class="icon">🏆</div><h3>Aucune note saisie</h3></div>';
+    list.innerHTML = '<div class="empty-state"><div class="icon">ð</div><h3>Aucune note saisie</h3></div>';
     return;
   }
 
-  const medals = ['🥇','🥈','🥉'];
+  const medals = ['ð¥','ð¥','ð¥'];
   list.innerHTML = sorted.map((f, i) => {
     const score = getScore(f);
     const rankCls = i === 0 ? 'r1' : i === 1 ? 'r2' : i === 2 ? 'r3' : '';
     return `<div class="top-item" onclick="openEditModal('${f.id}')">
       ${i < 3 ? `<div class="top-medal">${medals[i]}</div>` : `<div class="top-rank ${rankCls}">${i+1}</div>`}
       <div class="top-info">
-        <div class="top-name">${f.name}</div>
-        <div class="top-sub">📍 ${f.resto || 'Restaurant inconnu'}${f.ville ? ` · ${f.ville}` : ''}${f.date ? ` · ${formatDate(f.date)}` : ''}</div>
+        <div class="top-name">${f.resto || f.name || 'Restaurant inconnu'}</div>
+        <div class="top-sub">ð ${f.resto || 'Restaurant inconnu'}${f.ville ? ` Â· ${f.ville}` : ''}${f.date ? ` Â· ${formatDate(f.date)}` : ''}</div>
       </div>
-      <div class="top-score">★ ${score.toFixed(1)}</div>
+      <div class="top-score">â ${score.toFixed(1)}</div>
     </div>`;
   }).join('');
 }
@@ -1735,7 +1735,7 @@ function exportCSV() {
   a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
   a.download = `flambees_${new Date().toISOString().split('T')[0]}.csv`;
   a.click();
-  toast('📤 Export CSV téléchargé');
+  toast('ð¤ Export CSV tÃ©lÃ©chargÃ©');
 }
 
 function importCSV(e) {
@@ -1757,7 +1757,7 @@ function importCSV(e) {
     FLAMBEES = imported;
     save();
     renderAll();
-    toast(`📥 ${imported.length} entrées importées`);
+    toast(`ð¥ ${imported.length} entrÃ©es importÃ©es`);
   };
   reader.readAsText(file);
   e.target.value = '';
@@ -1767,7 +1767,7 @@ function clearAll() {
   FLAMBEES = [];
   save();
   renderAll();
-  toast('🗑 Données effacées');
+  toast('ð DonnÃ©es effacÃ©es');
 }
 
 /* ==================== DROPDOWN ==================== */
