@@ -891,6 +891,50 @@
   @media (max-width: 640px) { #map-container { height: 62vh; } }
   #leaflet-map { width: 100%; height: 100%; z-index: 1; }
 
+  #geo-warning:empty { display: none; }
+  .geo-warn-box {
+    background: var(--amber-bg);
+    border: 1px solid var(--amber);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    margin-bottom: 14px;
+    font-size: 13px;
+    color: var(--text);
+  }
+  .geo-warn-box b { font-size: 13.5px; }
+  .geo-warn-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; }
+  .geo-warn-chip {
+    background: var(--card);
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    padding: 5px 12px;
+    font-size: 12.5px;
+    cursor: pointer;
+    color: var(--text);
+    transition: all 0.15s;
+  }
+  .geo-warn-chip:hover { border-color: var(--accent); color: var(--accent); }
+  .geo-placing {
+    position: absolute;
+    top: 12px; left: 50%;
+    transform: translateX(-50%);
+    z-index: 12;
+    background: var(--accent);
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.25);
+    white-space: nowrap;
+  }
+  .geo-placing button {
+    background: rgba(255,255,255,0.25);
+    border: none; color: #fff; cursor: pointer;
+    border-radius: 12px; padding: 2px 9px; margin-left: 9px; font-size: 12px;
+  }
+  body.readonly .edit-only { display: none !important; }
+
   .map-controls {
     position: absolute;
     top: 12px; right: 12px;
@@ -1403,6 +1447,7 @@
       <div class="map-controls">
         <button class="map-ctrl-btn" onclick="locateMe()">📍 Ma position</button>
         <button class="map-ctrl-btn" onclick="fitAllMarkers()">🗺️ Tout voir</button>
+        <button class="map-ctrl-btn edit-only" onclick="resetGeocoding()" title="Recalculer les positions">🔄 Recalculer</button>
       </div>
     </div>
     <div class="map-legend">
@@ -1412,6 +1457,7 @@
       <span><span class="dot" style="background:#8a8378"></span>&lt; 2,5 ou sans note</span>
       <span><span class="dot" style="background:#1d4ed8"></span>📌 À tester</span>
     </div>
+    <div id="geo-warning"></div>
     <div class="map-list" id="map-list"></div>
   </div>
 
@@ -2567,27 +2613,177 @@ async function initLeafletMap() {
   }).addTo(_leafletMap);
 }
 
+/* ---------- GEOCODAGE ROBUSTE ---------- */
+/* Zone Alsace elargie, puis France entiere en repli */
+const GEO_BOX_ALSACE = { minLon: 6.60, minLat: 47.20, maxLon: 8.50, maxLat: 49.25 };
+const GEO_BOX_FR     = { minLon: -5.40, minLat: 41.20, maxLon: 9.90, maxLat: 51.30 };
+let _unlocated = [];
+let _placingId = null;
+
+function inBox(lat, lng, b) {
+  return lng >= b.minLon && lng <= b.maxLon && lat >= b.minLat && lat <= b.maxLat;
+}
+
+/* Normalisation pour comparer des noms de communes (casse, accents, tirets) */
+function geoNorm(str) {
+  return String(str || '').toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]/g, '');
+}
+
+function featCity(p) {
+  return p.city || p.town || p.village || p.municipality || p.locality || p.district || '';
+}
+
+function geoSleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+async function photonQuery(q, box) {
+  const url = 'https://photon.komoot.io/api/?q=' + encodeURIComponent(q)
+    + '&lang=fr&limit=10&lat=48.60&lon=7.60&location_bias_scale=0.6'
+    + '&bbox=' + [box.minLon, box.minLat, box.maxLon, box.maxLat].join(',');
+  const resp = await fetch(url);
+  if (!resp.ok) return [];
+  const data = await resp.json();
+  return data.features || [];
+}
+
+/*
+ * Renvoie { lat, lng, approx, label } ou null.
+ * Regles :
+ *  - on n'interroge JAMAIS le geocodeur avec le seul nom du restaurant
+ *    (ex. "CH" est interprete comme le code pays de la Suisse) ;
+ *  - chaque resultat est valide (pays FR, dans la bbox, commune coherente)
+ *    avant d'etre accepte ;
+ *  - en cas d'echec on ne pose pas de repere au hasard.
+ */
+async function geocodeFlambee(f) {
+  const ville   = (f.ville || '').trim();
+  const adresse = (f.adresse || '').trim();
+  const resto   = (f.resto || f.name || '').trim();
+
+  const attempts = [];
+  if (adresse && ville) attempts.push({ q: adresse + ', ' + ville + ', France', city: ville });
+  if (resto && ville)   attempts.push({ q: resto + ', ' + ville + ', France',   city: ville });
+  if (ville)            attempts.push({ q: ville + ', France', city: ville, approx: true });
+  if (!ville && adresse) attempts.push({ q: adresse + ', France', city: '' });
+  if (!attempts.length) return null;   // resto sans ville ni adresse : non localisable
+
+  for (const a of attempts) {
+    for (const box of [GEO_BOX_ALSACE, GEO_BOX_FR]) {
+      let feats = [];
+      try { feats = await photonQuery(a.q, box); } catch (e) { feats = []; }
+      for (const ft of feats) {
+        const p = ft.properties || {};
+        const c = ft.geometry && ft.geometry.coordinates;
+        if (!c) continue;
+        const lng = c[0], lat = c[1];
+        if (p.countrycode && p.countrycode !== 'FR') continue;   // ecarte la Suisse, l'Allemagne...
+        if (!inBox(lat, lng, GEO_BOX_FR)) continue;
+        if (a.city) {
+          const got  = geoNorm(featCity(p) || p.name);
+          const want = geoNorm(a.city);
+          if (!got || !(got.includes(want) || want.includes(got))) continue;  // mauvaise commune
+        }
+        return {
+          lat, lng,
+          approx: !!a.approx,
+          label: [p.name, featCity(p), p.postcode].filter(Boolean).join(', ')
+        };
+      }
+      if (feats.length) break;   // la zone a repondu : inutile d'elargir
+    }
+    await geoSleep(250);         // on menage l'API publique
+  }
+  return null;
+}
+
+function resetGeocoding() {
+  if (!requireEdit()) return;
+  if (!confirm('Recalculer la position de tous les restaurants ?\n(les rep\u00e8res plac\u00e9s \u00e0 la main sont conserv\u00e9s)')) return;
+  FLAMBEES.forEach(f => {
+    if (f.geoManual) return;
+    delete f.lat; delete f.lng; delete f.geoApprox; delete f.geoLabel;
+  });
+  save();
+  _leafletMarkers.forEach(m => m.remove());
+  _leafletMarkers = [];
+  toast('\u{1F504} Recalcul en cours\u2026');
+  renderCarte();
+}
+
+function startPlacing(id) {
+  if (!requireEdit()) return;
+  _placingId = id;
+  const f = FLAMBEES.find(x => x.id === id);
+  const box = document.getElementById('map-container');
+  let el = document.getElementById('geo-placing');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'geo-placing';
+    el.className = 'geo-placing';
+    box.appendChild(el);
+  }
+  el.innerHTML = 'Cliquez sur la carte pour placer \u00ab ' + esc(f ? (f.resto || f.name) : '') + ' \u00bb'
+    + '<button onclick="cancelPlacing()">Annuler</button>';
+  box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function cancelPlacing() {
+  _placingId = null;
+  const el = document.getElementById('geo-placing');
+  if (el) el.remove();
+}
+
+function setManualPosition(id, lat, lng) {
+  const idx = FLAMBEES.findIndex(x => x.id === id);
+  if (idx === -1) return;
+  FLAMBEES[idx].lat = lat;
+  FLAMBEES[idx].lng = lng;
+  FLAMBEES[idx].geoManual = true;
+  FLAMBEES[idx].geoApprox = false;
+  save();
+  toast('\u{1F4CD} Position enregistr\u00e9e');
+}
+
+function renderGeoWarning() {
+  const box = document.getElementById('geo-warning');
+  if (!box) return;
+  if (!_unlocated.length) { box.innerHTML = ''; return; }
+  box.innerHTML = '<div class="geo-warn-box"><b>\u26a0\ufe0f '
+    + _unlocated.length + ' adresse' + (_unlocated.length > 1 ? 's' : '') + ' introuvable'
+    + (_unlocated.length > 1 ? 's' : '') + '</b><br>'
+    + 'Aucun rep\u00e8re n\u2019a \u00e9t\u00e9 pos\u00e9 plut\u00f4t que d\u2019en poser un au mauvais endroit. '
+    + 'Compl\u00e9tez la ville / l\u2019adresse dans la fiche, ou cliquez ci-dessous pour placer le rep\u00e8re \u00e0 la main.'
+    + '<div class="geo-warn-list">'
+    + _unlocated.map(f => '<span class="geo-warn-chip" onclick="startPlacing(\'' + f.id + '\')">\u{1F4CD} '
+        + esc(f.resto || f.name) + (f.ville ? ' \u00b7 ' + esc(f.ville) : '') + '</span>').join('')
+    + '</div></div>';
+}
+
 async function geocodeAndPlaceMarkers(flambees) {
   if (!_leafletMap || !window.L) return;
   const toGeocode = flambees.filter(f => f.adresse || f.ville || f.resto);
   _allBounds = [];
 
+  _unlocated = [];
+
   for (const f of toGeocode) {
     let lat = f.lat, lng = f.lng;
     if (!lat || !lng) {
-      const q = [f.resto, f.adresse, f.ville].filter(Boolean).join(' ');
-      try {
-        const url = 'https://photon.komoot.io/api/?q=' + encodeURIComponent(q) + '&lat=48.5&lon=7.7&zoom=12&limit=1&lang=fr';
-        const resp = await fetch(url);
-        const data = await resp.json();
-        if (data.features && data.features.length) {
-          [lng, lat] = data.features[0].geometry.coordinates;
-          const idx = FLAMBEES.findIndex(x => x.id === f.id);
-          if (idx !== -1) { FLAMBEES[idx].lat = lat; FLAMBEES[idx].lng = lng; save(); }
+      const res = await geocodeFlambee(f);
+      if (res) {
+        lat = res.lat; lng = res.lng;
+        const idx = FLAMBEES.findIndex(x => x.id === f.id);
+        if (idx !== -1) {
+          FLAMBEES[idx].lat = lat;
+          FLAMBEES[idx].lng = lng;
+          FLAMBEES[idx].geoApprox = res.approx;
+          FLAMBEES[idx].geoLabel = res.label;
+          save();
         }
-      } catch(e) {}
+      }
     }
-    if (!lat || !lng) continue;
+    if (!lat || !lng) { _unlocated.push(f); continue; }
 
     const score = getScore(f);
     const wish = !isVisited(f);
@@ -2609,7 +2805,7 @@ async function geocodeAndPlaceMarkers(flambees) {
       iconSize: [bubbleW, scoreStr ? 44 : 36]
     });
 
-    const marker = L.marker([lat, lng], { icon })
+    const marker = L.marker([lat, lng], { icon, draggable: canEdit() })
       .addTo(_leafletMap)
       .bindPopup(
         '<strong>' + esc(f.resto || f.name) + '</strong>'
@@ -2617,17 +2813,40 @@ async function geocodeAndPlaceMarkers(flambees) {
         + (scoreStr ? '<br><span style="color:#c84b0a;font-weight:700">🔥 ' + scoreStr + '/5</span>' : '')
         + (wish ? '<br><span style="color:#1d4ed8;font-weight:700">📌 À tester</span>' : '')
         + (f.notes ? '<br><em style="font-size:11px">' + esc(f.notes.substring(0, 60)) + (f.notes.length > 60 ? '…' : '') + '</em>' : '')
+        + (f.geoApprox ? '<br><small style="color:#b45309">\u26a0\ufe0f Position approximative (centre de la commune)'
+            + (canEdit() ? ' \u2014 glissez le rep\u00e8re pour l\u2019ajuster' : '') + '</small>' : '')
         + '<br><a href="#" onclick="openDetail(\'' + f.id + '\');return false" style="font-size:11.5px;color:#c84b0a;font-weight:600">Voir la fiche →</a>'
       );
+
+    if (canEdit()) {
+      marker.on('dragend', function (e) {
+        const ll = e.target.getLatLng();
+        setManualPosition(f.id, ll.lat, ll.lng);
+      });
+    }
 
     marker._fid = f.id;
     _leafletMarkers.push(marker);
     _allBounds.push([lat, lng]);
   }
 
+  renderGeoWarning();
+
   if (_allBounds.length) {
     _leafletMap.fitBounds(_allBounds, { padding: [40, 40], maxZoom: 14 });
     setTimeout(() => _leafletMap.invalidateSize(), 100);
+  }
+
+  if (!_leafletMap._placeHandlerBound) {
+    _leafletMap._placeHandlerBound = true;
+    _leafletMap.on('click', (e) => {
+      if (!_placingId) return;
+      setManualPosition(_placingId, e.latlng.lat, e.latlng.lng);
+      cancelPlacing();
+      _leafletMarkers.forEach(m => m.remove());
+      _leafletMarkers = [];
+      renderCarte();
+    });
   }
 }
 
